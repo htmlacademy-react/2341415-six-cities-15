@@ -1,7 +1,7 @@
 # Личный проект «Шесть городов»
 
 * Студент: [Elena Vlasenko](https://up.htmlacademy.ru/react/15/user/2341415).
-* Наставник: `Неизвестно`.
+* Наставник: [Олег Глущенко](https://htmlacademy.ru/profile/id305355).
 
 ---
 
