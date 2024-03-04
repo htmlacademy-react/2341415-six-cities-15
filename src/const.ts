@@ -1,3 +1,20 @@
 export const Setting = {
   OffersCount: 5
 };
+
+export enum AuthorizationStatus {
+  Auth = 'AUTH',
+  NoAuth = 'NO_AUTH',
+  Unknown = 'UNKNOWN'
+}
+
+export enum AppRoute {
+  Main = '/',
+  Login = '/login',
+  Favorites = '/favorites',
+  Offer = '/offer/',
+  OfferId = ':id',
+}
+
+export const maxRating = 5;
+
