@@ -16,5 +16,5 @@ export enum AppRoute {
   OfferId = ':id',
 }
 
-export const maxRating = 5;
+export const MAX_RATING = 5;
 
