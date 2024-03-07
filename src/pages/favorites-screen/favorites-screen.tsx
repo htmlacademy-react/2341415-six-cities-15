@@ -1,4 +1,4 @@
-import FavoriteList from '../../components/favorite-cards/favorite-list';
+import FavoriteList, { FavoriteListProps } from '../../components/favorite-cards/favorite-list';
 import { Offer } from '../../types';
 import { groupBy } from 'lodash';
 
@@ -12,7 +12,7 @@ function FavoritesScreen({ offers }: Props): JSX.Element {
       <div className="page__favorites-container container">
         <section className="favorites">
           <h1 className="favorites__title">Saved listing</h1>
-          {<FavoriteList {...groupBy(offers, 'city.name')} />}
+          {<FavoriteList {...groupBy(offers, 'city.name') as unknown as FavoriteListProps} />}
         </section>
       </div>
     </main>

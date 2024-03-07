@@ -20,5 +20,5 @@ export enum AppRoute {
 
 export const MAX_RATING = 5;
 
-export const CITIES: CityName[] = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'] as const;
+export const CITIES: readonly CityName[] = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'];
 
