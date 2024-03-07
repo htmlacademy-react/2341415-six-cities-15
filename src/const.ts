@@ -1,3 +1,5 @@
+import { CityName } from './types';
+
 export const Setting = {
   OffersCount: 5
 };
@@ -17,4 +19,6 @@ export enum AppRoute {
 }
 
 export const MAX_RATING = 5;
+
+export const CITIES: readonly CityName[] = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'];
 

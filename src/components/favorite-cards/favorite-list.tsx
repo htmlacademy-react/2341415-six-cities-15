@@ -1,13 +1,15 @@
-import FavoriteListItem, { FavoriteListItemProps } from './favorite-list-item';
+import { CityName } from '../../types';
+import { FavoriteCardProps } from './favorite-card';
+import FavoriteListItem from './favorite-list-item';
 
 type Props = {
-  cityOffers: FavoriteListItemProps[];
+  [key in CityName]: FavoriteCardProps[];
 }
 
-function FavoriteList({ cityOffers }: Props): JSX.Element {
+function FavoriteList(props: Props): JSX.Element {
   return (
     <ul className="favorites__list">
-      {cityOffers.map((itemProps) => <FavoriteListItem key={itemProps.cityName} {...itemProps} />)}
+      {Object.entries(props).map(([cityName, cityOffers]) => <FavoriteListItem key={cityName} cityName={cityName} cityOffers={cityOffers} />)}
     </ul>
   );
 }

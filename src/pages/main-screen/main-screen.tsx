@@ -1,47 +1,38 @@
 import CardsList from '../../components/cards/cards-list';
-import { Offer } from '../../types';
+import { CityName, Offer } from '../../types';
+import { CITIES } from '../../const';
+import Tabs from '../../components/tabs/tabs';
+import { useState } from 'react';
+import CityMap from '../../components/map/map';
+import { cityLocation } from '../../mocks/city-locations';
+import { Point } from '../../components/map/types';
 
 type MainScreenProps = {
-  offers: Offer[];
+  [key in CityName]: Offer[];
 };
 
-function MainScreen({ offers}: MainScreenProps): JSX.Element {
+function offerToPoint(offer: Offer): Point {
+  const { id, location, title } = offer;
+
+  return {
+    id,
+    title,
+    lat: location.latitude,
+    lng: location.longitude,
+  };
+}
+
+function MainScreen(props: MainScreenProps): JSX.Element {
+  const [selectedCity, setSelectedCity] = useState(CITIES[0]);
+  const cityOffers = props[selectedCity] ?? [];
+
   return (
     <main className="page__main page__main--index">
       <h1 className="visually-hidden">Cities</h1>
       <div className="tabs">
         <section className="locations container">
           <ul className="locations__list tabs__list">
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Paris</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Cologne</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Brussels</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item tabs__item--active">
-                <span>Amsterdam</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Hamburg</span>
-              </a>
-            </li>
-            <li className="locations__item">
-              <a className="locations__item-link tabs__item" href="#">
-                <span>Dusseldorf</span>
-              </a>
-            </li>
+            {CITIES.map((cityName) => <Tabs key={cityName} cityName={cityName} onClick={setSelectedCity}/>)}
           </ul>
         </section>
       </div>
@@ -66,16 +57,22 @@ function MainScreen({ offers}: MainScreenProps): JSX.Element {
               </ul>
             </form>
             <div className="cities__places-list places__list tabs__content">
-              <CardsList offers={offers} />
+              <CardsList offers={cityOffers} />
             </div>
           </section>
           <div className="cities__right-section">
-            <section className="cities__map map"></section>
+            <section className="cities__map map">
+              <CityMap city={{ name: selectedCity, location: cityLocation[selectedCity] }} points={cityOffers.map(offerToPoint)} selectedPointId={undefined} />
+            </section>
           </div>
         </div>
       </div>
     </main>
   );
 }
+
+export type {
+  MainScreenProps
+};
 
 export default MainScreen;

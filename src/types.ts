@@ -1,6 +1,6 @@
 export type OfferType = string;
 
-export type CityName = string;
+export type CityName = 'Paris' | 'Cologne' | 'Brussels' | 'Amsterdam' | 'Hamburg' | 'Dusseldorf';
 
 export type City = {
   name: CityName;
