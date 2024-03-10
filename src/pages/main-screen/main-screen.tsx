@@ -5,26 +5,16 @@ import Tabs from '../../components/tabs/tabs';
 import { useState } from 'react';
 import CityMap from '../../components/map/map';
 import { cityLocation } from '../../mocks/city-locations';
-import { Point } from '../../components/map/types';
+import { offerToPoint } from '../../utils';
 
 type MainScreenProps = {
   [key in CityName]: Offer[];
 };
 
-function offerToPoint(offer: Offer): Point {
-  const { id, location, title } = offer;
-
-  return {
-    id,
-    title,
-    lat: location.latitude,
-    lng: location.longitude,
-  };
-}
-
 function MainScreen(props: MainScreenProps): JSX.Element {
   const [selectedCity, setSelectedCity] = useState(CITIES[0]);
   const cityOffers = props[selectedCity] ?? [];
+  const [selectedOfferId, setActiveOfferId] = useState<undefined | string>(undefined);
 
   return (
     <main className="page__main page__main--index">
@@ -57,12 +47,17 @@ function MainScreen(props: MainScreenProps): JSX.Element {
               </ul>
             </form>
             <div className="cities__places-list places__list tabs__content">
-              <CardsList offers={cityOffers} />
+              <CardsList offers={cityOffers} onCardMouseEnter={setActiveOfferId} onCardMouseLeave={() => setActiveOfferId(undefined)} />
             </div>
           </section>
           <div className="cities__right-section">
             <section className="cities__map map">
-              <CityMap city={{ name: selectedCity, location: cityLocation[selectedCity] }} points={cityOffers.map(offerToPoint)} selectedPointId={undefined} />
+              <CityMap
+                city={{ name: selectedCity, location: cityLocation[selectedCity] }}
+                points={cityOffers.map(offerToPoint)}
+                selectedPointId={selectedOfferId}
+                style={{ height: '744px', width: '512px' }}
+              />
             </section>
           </div>
         </div>

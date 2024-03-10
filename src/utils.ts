@@ -1,4 +1,7 @@
 import { AppRoute } from './const';
+import { format } from 'date-fns';
+import { Offer } from './types';
+import { Point } from './components/map/types';
 
 export function getLayoutState(pathname: AppRoute) {
   let rootClassName = '';
@@ -22,4 +25,19 @@ export function getLayoutState(pathname: AppRoute) {
 
 export function getRatingPercentage(rating: number, maxRating: number) {
   return Math.round(rating / maxRating * 100);
+}
+
+export function formatCommentDate(date: Date): string {
+  return format(date, 'MMMM yyyy');
+}
+
+export function offerToPoint(offer: Offer): Point {
+  const { id, location, title } = offer;
+
+  return {
+    id,
+    title,
+    lat: location.latitude,
+    lng: location.longitude,
+  };
 }
