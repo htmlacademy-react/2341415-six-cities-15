@@ -10,6 +10,7 @@ type MapProps = {
   city: City;
   points: Point[];
   selectedPointId: string | undefined;
+  className: string;
 };
 
 const defaultCustomIcon = new Icon({
@@ -25,7 +26,7 @@ const currentCustomIcon = new Icon({
 });
 
 function CityMap(props: MapProps): JSX.Element {
-  const { city, points, selectedPointId } = props;
+  const { city, points, selectedPointId, className } = props;
 
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
@@ -45,7 +46,7 @@ function CityMap(props: MapProps): JSX.Element {
 
         marker
           .setIcon(
-            selectedPoint !== undefined && point.title === selectedPoint.title
+            selectedPoint !== undefined && point.id === selectedPoint.id
               ? currentCustomIcon
               : defaultCustomIcon
           )
@@ -58,7 +59,7 @@ function CityMap(props: MapProps): JSX.Element {
     }
   }, [map, points, selectedPointId]);
 
-  return <div style={{height: '746px', width: '512px'}} ref={mapRef}></div>;
+  return (<section className={`${className} map`} ref={mapRef}></section>);
 }
 
 export default CityMap;

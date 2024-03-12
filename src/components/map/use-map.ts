@@ -36,10 +36,12 @@ function useMap(
 
       setMap(instance);
       isRenderedRef.current = true;
+    } else {
+      map?.panTo({ lat: latitude, lng: longitude });
     }
   };
 
-  useEffect(effectCallback, [mapRef, city]);
+  useEffect(effectCallback, [mapRef, city, map]);
 
   return map;
 }

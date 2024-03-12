@@ -47,14 +47,14 @@ export const offers: OfferCard[] = [
     city: {
       name: 'Amsterdam',
       location: {
-        latitude: 48.85661,
-        longitude: 2.351499,
+        latitude: 52.37454,
+        longitude: 4.897976,
         zoom: 13
       }
     },
     location: {
-      latitude: 48.858610000000006,
-      longitude: 2.330499,
+      latitude: 52.37454,
+      longitude: 4.897976,
       zoom: 16
     },
     isFavorite: true,
