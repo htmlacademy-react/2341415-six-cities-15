@@ -51,14 +51,12 @@ function MainScreen(props: MainScreenProps): JSX.Element {
             </div>
           </section>
           <div className="cities__right-section">
-            <section className="cities__map map">
-              <CityMap
-                city={{ name: selectedCity, location: cityLocation[selectedCity] }}
-                points={cityOffers.map(offerToPoint)}
-                selectedPointId={selectedOfferId}
-                style={{ height: '744px', width: '512px' }}
-              />
-            </section>
+            <CityMap
+              city={{ name: selectedCity, location: cityLocation[selectedCity] }}
+              points={cityOffers.map(offerToPoint)}
+              selectedPointId={selectedOfferId}
+              className='cities__map'
+            />
           </div>
         </div>
       </div>

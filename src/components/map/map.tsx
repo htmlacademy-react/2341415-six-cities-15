@@ -1,4 +1,4 @@
-import { useRef, useEffect, CSSProperties } from 'react';
+import { useRef, useEffect } from 'react';
 import { Icon, Marker, layerGroup } from 'leaflet';
 import useMap from './use-map';
 import { Point } from './types';
@@ -10,7 +10,7 @@ type MapProps = {
   city: City;
   points: Point[];
   selectedPointId: string | undefined;
-  style: CSSProperties;
+  className: string;
 };
 
 const defaultCustomIcon = new Icon({
@@ -26,7 +26,7 @@ const currentCustomIcon = new Icon({
 });
 
 function CityMap(props: MapProps): JSX.Element {
-  const { city, points, selectedPointId, style } = props;
+  const { city, points, selectedPointId, className } = props;
 
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
@@ -59,7 +59,7 @@ function CityMap(props: MapProps): JSX.Element {
     }
   }, [map, points, selectedPointId]);
 
-  return <div style={style} ref={mapRef}></div>;
+  return (<section className={`${className} map`} ref={mapRef}></section>);
 }
 
 export default CityMap;
