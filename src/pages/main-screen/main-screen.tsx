@@ -1,20 +1,24 @@
 import CardsList from '../../components/cards/cards-list';
-import { CityName, Offer } from '../../types';
+import { CityName } from '../../types';
 import { CITIES } from '../../const';
 import Tabs from '../../components/tabs/tabs';
 import { useState } from 'react';
 import CityMap from '../../components/map/map';
 import { cityLocation } from '../../mocks/city-locations';
 import { offerToPoint } from '../../utils';
+import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
+import { cityChangeAction } from '../../store/action';
 
-type MainScreenProps = {
-  [key in CityName]: Offer[];
-};
-
-function MainScreen(props: MainScreenProps): JSX.Element {
-  const [selectedCity, setSelectedCity] = useState(CITIES[0]);
-  const cityOffers = props[selectedCity] ?? [];
+function MainScreen(): JSX.Element {
   const [selectedOfferId, setActiveOfferId] = useState<undefined | string>(undefined);
+  const dispatch = useAppDispatch();
+  const selectedCity = useAppSelector((state) => state.city);
+  const cityOffers = useAppSelector((state) => state.offers);
+
+  const onTabClick = (cityName: CityName) => {
+    const action = cityChangeAction(cityName);
+    dispatch(action);
+  };
 
   return (
     <main className="page__main page__main--index">
@@ -22,7 +26,7 @@ function MainScreen(props: MainScreenProps): JSX.Element {
       <div className="tabs">
         <section className="locations container">
           <ul className="locations__list tabs__list">
-            {CITIES.map((cityName) => <Tabs key={cityName} cityName={cityName} onClick={setSelectedCity}/>)}
+            {CITIES.map((cityName) => <Tabs key={cityName} cityName={cityName} selectedCity={selectedCity} onClick={onTabClick}/>)}
           </ul>
         </section>
       </div>
@@ -30,7 +34,7 @@ function MainScreen(props: MainScreenProps): JSX.Element {
         <div className="cities__places-container container">
           <section className="cities__places places">
             <h2 className="visually-hidden">Places</h2>
-            <b className="places__found">312 places to stay in Amsterdam</b>
+            <b className="places__found">{cityOffers.length} places to stay in {selectedCity}</b>
             <form className="places__sorting" action="#" method="get">
               <span className="places__sorting-caption">Sort by</span>
               <span className="places__sorting-type" tabIndex={0}>
@@ -63,9 +67,5 @@ function MainScreen(props: MainScreenProps): JSX.Element {
     </main>
   );
 }
-
-export type {
-  MainScreenProps
-};
 
 export default MainScreen;

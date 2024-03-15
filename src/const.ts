@@ -28,3 +28,5 @@ export const OFFER_PAGE_MAP_WIGHT = 1144;
 
 export const CITIES: readonly CityName[] = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'];
 
+export const DEFAULT_CITY = CITIES[0];
+
