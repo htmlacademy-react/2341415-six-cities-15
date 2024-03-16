@@ -30,11 +30,16 @@ export const offers: OfferCard[] = [
     ],
     host: {
       name: 'Oliver Conner',
-      avatarUrl: 'https://url-to-image/image.png',
+      avatarUrl: 'https://15.design.htmlacademy.pro/static/host/avatar-angelina.jpg',
       isPro: false
     },
     images: [
-      'https://url-to-image/image.png'
+      'https://15.design.htmlacademy.pro/static/hotel/18.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/4.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/7.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/20.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/2.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/16.jpg'
     ],
     maxAdults: 4
   },
@@ -63,15 +68,21 @@ export const offers: OfferCard[] = [
     description: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.',
     bedrooms: 3,
     goods: [
-      'Heating'
+      'Heating',
+      'Fridge'
     ],
     host: {
       name: 'Oliver Conner',
-      avatarUrl: 'https://url-to-image/image.png',
+      avatarUrl: 'https://15.design.htmlacademy.pro/static/host/avatar-angelina.jpg',
       isPro: false
     },
     images: [
-      'https://url-to-image/image.png'
+      'https://15.design.htmlacademy.pro/static/hotel/18.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/4.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/7.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/20.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/2.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/16.jpg'
     ],
     maxAdults: 4
   },
@@ -100,15 +111,21 @@ export const offers: OfferCard[] = [
     description: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam.',
     bedrooms: 3,
     goods: [
-      'Heating'
+      'Heating',
+      'Cabel TV'
     ],
     host: {
       name: 'Oliver Conner',
-      avatarUrl: 'https://url-to-image/image.png',
+      avatarUrl: 'https://15.design.htmlacademy.pro/static/host/avatar-angelina.jpg',
       isPro: false
     },
     images: [
-      'https://url-to-image/image.png'
+      'https://15.design.htmlacademy.pro/static/hotel/18.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/4.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/7.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/20.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/2.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/16.jpg'
     ],
     maxAdults: 4
   },
@@ -141,11 +158,16 @@ export const offers: OfferCard[] = [
     ],
     host: {
       name: 'Oliver Conner',
-      avatarUrl: 'https://url-to-image/image.png',
+      avatarUrl: 'https://15.design.htmlacademy.pro/static/host/avatar-angelina.jpg',
       isPro: false
     },
     images: [
-      'https://url-to-image/image.png'
+      'https://15.design.htmlacademy.pro/static/hotel/18.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/4.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/7.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/20.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/2.jpg',
+      'https://15.design.htmlacademy.pro/static/hotel/16.jpg'
     ],
     maxAdults: 4
   },

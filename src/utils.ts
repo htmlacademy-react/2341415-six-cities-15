@@ -2,6 +2,7 @@ import { AppRoute } from './const';
 import { format } from 'date-fns';
 import { Offer } from './types';
 import { Point } from './components/map/types';
+import { SortVariants } from './const';
 
 export function getLayoutState(pathname: AppRoute) {
   let rootClassName = '';
@@ -41,3 +42,12 @@ export function offerToPoint(offer: Offer): Point {
     lng: location.longitude,
   };
 }
+
+type Comparator = (offer1: Offer, offer2: Offer) => number;
+
+export const comparators: Record<SortVariants, Comparator> = {
+  [SortVariants.Popular]: () => 0,
+  [SortVariants.PriceHighToLow]: (offer1, offer2) => offer2.price - offer1.price,
+  [SortVariants.PriceLowToHigh]: (offer1, offer2) => offer1.price - offer2.price,
+  [SortVariants.TopRatedFirst]: (offer1, offer2) => offer2.rating - offer1.rating,
+};

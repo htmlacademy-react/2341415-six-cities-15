@@ -30,3 +30,12 @@ export const CITIES: readonly CityName[] = ['Paris', 'Cologne', 'Brussels', 'Ams
 
 export const DEFAULT_CITY = CITIES[0];
 
+export enum SortVariants {
+  Popular = 'Popular',
+  PriceLowToHigh = 'Price: low to high',
+  PriceHighToLow = 'Price: high to low',
+  TopRatedFirst = 'Top rated first'
+}
+
+export const DEFAULT_SORTING_ORDER = SortVariants.Popular;
+
