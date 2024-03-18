@@ -2,11 +2,13 @@ import { Outlet, useLocation, Link } from 'react-router-dom';
 import { AppRoute, AuthorizationStatus } from '../const';
 import { getLayoutState } from '../utils';
 import { getAuthorizationStatus } from '../pages/authorization-status';
+import { useAppSelector } from '../hooks/app-dispatch';
 
 function Layout(): JSX.Element {
   const { pathname } = useLocation();
   const { rootClassName, linkClassName, shouldRenderUser, shouldRenderFooter } = getLayoutState(pathname as AppRoute);
   const authorizationStatus = getAuthorizationStatus();
+  const favoriteOffersCount = useAppSelector((state) => state.favoriteOffers);
 
   return (
     <div className={`page${rootClassName}`}>
@@ -35,7 +37,7 @@ function Layout(): JSX.Element {
                         {authorizationStatus === AuthorizationStatus.Auth ? (
                           <>
                             <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
-                            <span className="header__favorite-count">3</span>
+                            <span className="header__favorite-count">{favoriteOffersCount.length}</span>
                           </>
                         ) : <span className="header__login">Sign in</span>}
                       </Link>

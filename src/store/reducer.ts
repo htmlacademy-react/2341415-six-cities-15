@@ -9,12 +9,14 @@ type OfferState = {
   city: CityName;
   offers: Offer[];
   selectedSorting: SortVariants;
+  favoriteOffers: Offer[];
 }
 
 const initialState: OfferState = {
   city: DEFAULT_CITY,
   offers: offers.filter((offer) => offer.city.name === DEFAULT_CITY).sort(comparators[DEFAULT_SORTING_ORDER]),
   selectedSorting: DEFAULT_SORTING_ORDER,
+  favoriteOffers: offers.filter((offer) => offer.isFavorite),
 };
 
 export default createReducer(initialState, (builder) => {
