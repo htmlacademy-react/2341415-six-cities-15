@@ -1,14 +1,22 @@
 import { Outlet, useLocation, Link } from 'react-router-dom';
-import { AppRoute, AuthorizationStatus } from '../const';
+import { AppRoute, AuthorizationStatus, DEFAULT_CITY } from '../const';
 import { getLayoutState } from '../utils';
 import { getAuthorizationStatus } from '../pages/authorization-status';
-import { useAppSelector } from '../hooks/app-dispatch';
+import { useAppDispatch, useAppSelector } from '../hooks/app-dispatch';
+import { cityChangeAction } from '../store/action';
+import { fetchOffersAction } from '../store/api-actions';
 
 function Layout(): JSX.Element {
   const { pathname } = useLocation();
   const { rootClassName, linkClassName, shouldRenderUser, shouldRenderFooter } = getLayoutState(pathname as AppRoute);
   const authorizationStatus = getAuthorizationStatus();
   const favoriteOffersCount = useAppSelector((state) => state.favoriteOffers);
+  const dispatch = useAppDispatch();
+
+  function handleLogoClick() {
+    dispatch(cityChangeAction(DEFAULT_CITY));
+    dispatch(fetchOffersAction(DEFAULT_CITY));
+  }
 
   return (
     <div className={`page${rootClassName}`}>
@@ -19,6 +27,7 @@ function Layout(): JSX.Element {
               <Link
                 className={`header__logo-link${linkClassName}`}
                 to={AppRoute.Main}
+                onClick={handleLogoClick}
               >
                 <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41" />
               </Link>

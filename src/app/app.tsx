@@ -1,4 +1,3 @@
-import { StrictMode } from 'react';
 import MainScreen from '../pages/main-screen/main-screen';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import NotFoundPage from '../pages/error-screen/error-404-screen';
@@ -8,45 +7,48 @@ import OfferScreen from '../pages/offer-screen/offer-screen';
 import PrivateRoute from '../components/private-route/private-route';
 import { AppRoute } from '../const';
 import Layout from './layout';
-import { getAuthorizationStatus } from '../pages/authorization-status';
-import { OfferCard } from '../types';
-import { Provider } from 'react-redux';
-import store from '../store/store';
+import ErrorMessage from '../components/error-message/error-message';
+import { useAppSelector } from '../hooks/app-dispatch';
+import LoadingScreen from '../pages/loading-screen/loading-screen';
 
-type AppScreenProps = {
-  offers: OfferCard[];
-};
+function App(): JSX.Element {
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const isOffersDataLoading = useAppSelector((state) => state.isOffersDataLoading);
+  const offers = useAppSelector((state) => state.offers);
 
-function App({ offers}: AppScreenProps): JSX.Element {
-  const authorizationStatus = getAuthorizationStatus();
+  if(isOffersDataLoading) {
+    return (
+      <LoadingScreen/>
+    );
+  }
+
   return (
-    <StrictMode>
-      <Provider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route path={AppRoute.Main} element={<Layout />}>
-              <Route index element={<MainScreen />} />
-              <Route path={AppRoute.Favorites} element={
-                <PrivateRoute authorizationStatus={authorizationStatus}>
-                  <FavoritesScreen offers={offers.filter((offer) => offer.isFavorite === true)}/>
-                </PrivateRoute>
-              }
-              />
-              <Route path={AppRoute.Login} element={
-                <PrivateRoute authorizationStatus={authorizationStatus} isReverse>
-                  <LoginScreen />
-                </PrivateRoute>
-              }
-              />
-              <Route path={AppRoute.Offer} element={<OfferScreen offers={offers} />}>
-                <Route path={AppRoute.OfferId} element={<OfferScreen offers={offers}/>} />
-              </Route>
-              <Route path='*' element={<NotFoundPage />} />
+    <>
+      <ErrorMessage />
+      <BrowserRouter>
+        <Routes>
+          <Route path={AppRoute.Main} element={<Layout />}>
+            <Route index element={<MainScreen />} />
+            <Route path={AppRoute.Favorites} element={
+              <PrivateRoute authorizationStatus={authorizationStatus}>
+                <FavoritesScreen offers={offers.filter((offer) => offer.isFavorite === true)}/>
+              </PrivateRoute>
+            }
+            />
+            <Route path={AppRoute.Login} element={
+              <PrivateRoute authorizationStatus={authorizationStatus} isReverse>
+                <LoginScreen />
+              </PrivateRoute>
+            }
+            />
+            <Route path={AppRoute.Offer} element={<OfferScreen />}>
+              <Route path={AppRoute.OfferId} element={<OfferScreen />} />
             </Route>
-          </Routes>
-        </BrowserRouter>
-      </Provider>
-    </StrictMode>
+            <Route path='*' element={<NotFoundPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 
