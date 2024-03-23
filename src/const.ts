@@ -39,3 +39,11 @@ export enum SortVariants {
 
 export const DEFAULT_SORTING_ORDER = SortVariants.Popular;
 
+export enum APIRoute {
+  Offers = '/offers',
+  Login = '/login',
+  Logout = '/logout'
+}
+
+export const TIMEOUT_SHOW_ERROR = 2000;
+

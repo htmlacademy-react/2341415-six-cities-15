@@ -9,19 +9,27 @@ import { offerToPoint } from '../../utils';
 import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
 import { cityChangeAction } from '../../store/action';
 import Sort from '../../components/sort/sort';
+import { fetchOffersAction } from '../../store/api-actions';
+import LoadingScreen from '../loading-screen/loading-screen';
 
 function MainScreen(): JSX.Element {
   const [selectedOfferId, setActiveOfferId] = useState<undefined | string>(undefined);
   const dispatch = useAppDispatch();
   const selectedCity = useAppSelector((state) => state.city);
   const cityOffers = useAppSelector((state) => state.offers);
+  const isOffersDataLoading = useAppSelector((state) => state.isOffersDataLoading);
 
   const onTabClick = (cityName: CityName) => {
     const action = cityChangeAction(cityName);
     dispatch(action);
+    dispatch(fetchOffersAction(cityName));
   };
 
   const selectedSorting = useAppSelector((state) => state.selectedSorting);
+
+  if(isOffersDataLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <main className="page__main page__main--index">

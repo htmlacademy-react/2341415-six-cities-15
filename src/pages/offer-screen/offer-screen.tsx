@@ -1,7 +1,5 @@
-import { useParams } from 'react-router-dom';
 import { getAuthorizationStatus } from '../authorization-status';
 import { AuthorizationStatus } from '../../const';
-import { OfferCard } from '../../types';
 import NotFoundPage from '../error-screen/error-404-screen';
 import { getRatingPercentage, offerToPoint } from '../../utils';
 import { MAX_RATING } from '../../const';
@@ -12,16 +10,18 @@ import CityMap from '../../components/map/map';
 import { cityLocation } from '../../mocks/city-locations';
 import NearestCardsList from '../../components/cards/nearest-cards-list';
 import cn from 'classnames';
+import { useAppSelector } from '../../hooks/app-dispatch';
+import LoadingScreen from '../loading-screen/loading-screen';
 
-type Props = {
-  offers: OfferCard[];
-}
-
-function OfferScreen({ offers }: Props): JSX.Element {
+function OfferScreen(): JSX.Element {
   const authorizationStatus = getAuthorizationStatus();
-  const params = useParams();
-  const selectedOffer = offers.find((it) => it.id === params.id);
-  const neighbourhood = offers.filter((offer) => offer.city.name === selectedOffer?.city.name && offer.id !== selectedOffer.id);
+  const selectedOffer = useAppSelector((state) => state.selectedOfferCard);
+  const isSelectedOfferCardLoading = useAppSelector((state) => state.isSelectedOfferCardLoading);
+  const neighbours = useAppSelector((state) => state.neighbours);
+
+  if(isSelectedOfferCardLoading) {
+    return <LoadingScreen />;
+  }
 
   if(!selectedOffer){
     return <NotFoundPage />;
@@ -113,7 +113,7 @@ function OfferScreen({ offers }: Props): JSX.Element {
         </div>
         <CityMap
           city={{ name: selectedOffer.city.name, location: cityLocation[selectedOffer.city.name] }}
-          points={[selectedOffer, ...neighbourhood].map(offerToPoint)}
+          points={[selectedOffer, ...neighbours].map(offerToPoint)}
           selectedPointId={selectedOffer.id}
           className='offer__map'
         />
@@ -122,7 +122,7 @@ function OfferScreen({ offers }: Props): JSX.Element {
         <section className="near-places places">
           <h2 className="near-places__title">Other places in the neighbourhood</h2>
           <div className="near-places__list places__list">
-            <NearestCardsList offers={offers.slice(0, 3)} />
+            <NearestCardsList offers={neighbours} />
           </div>
         </section>
       </div>
