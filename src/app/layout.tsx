@@ -1,7 +1,6 @@
 import { Outlet, useLocation, Link } from 'react-router-dom';
 import { AppRoute, AuthorizationStatus, DEFAULT_CITY } from '../const';
 import { getLayoutState } from '../utils';
-import { getAuthorizationStatus } from '../pages/authorization-status';
 import { useAppDispatch, useAppSelector } from '../hooks/app-dispatch';
 import { cityChangeAction } from '../store/action';
 import { fetchOffersAction } from '../store/api-actions';
@@ -9,7 +8,7 @@ import { fetchOffersAction } from '../store/api-actions';
 function Layout(): JSX.Element {
   const { pathname } = useLocation();
   const { rootClassName, linkClassName, shouldRenderUser, shouldRenderFooter } = getLayoutState(pathname as AppRoute);
-  const authorizationStatus = getAuthorizationStatus();
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
   const favoriteOffersCount = useAppSelector((state) => state.favoriteOffers);
   const dispatch = useAppDispatch();
 

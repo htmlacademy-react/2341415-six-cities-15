@@ -1,4 +1,3 @@
-import { getAuthorizationStatus } from '../authorization-status';
 import { AuthorizationStatus } from '../../const';
 import NotFoundPage from '../error-screen/error-404-screen';
 import { getRatingPercentage, offerToPoint } from '../../utils';
@@ -14,7 +13,7 @@ import { useAppSelector } from '../../hooks/app-dispatch';
 import LoadingScreen from '../loading-screen/loading-screen';
 
 function OfferScreen(): JSX.Element {
-  const authorizationStatus = getAuthorizationStatus();
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
   const selectedOffer = useAppSelector((state) => state.selectedOfferCard);
   const isSelectedOfferCardLoading = useAppSelector((state) => state.isSelectedOfferCardLoading);
   const neighbours = useAppSelector((state) => state.neighbours);

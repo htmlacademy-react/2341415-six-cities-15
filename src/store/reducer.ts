@@ -1,9 +1,9 @@
 import {createReducer} from '@reduxjs/toolkit';
 import { AuthorizationStatus, DEFAULT_CITY, DEFAULT_SORTING_ORDER, SortVariants } from '../const';
 import { CityName, Offer, OfferCard } from '../types';
-import { cityChangeAction, sortingOrderChangeAction, loadOffersAction, requireAuthorizationAction, setError, loadOfferByIdAction } from './action';
+import { cityChangeAction, sortingOrderChangeAction, setError } from './action';
 import { comparators } from '../utils';
-import { fetchOffersAction, fetchOffersByIdAction } from './api-actions';
+import { fetchOffersAction, fetchOffersByIdAction, loginAction } from './api-actions';
 
 type OfferState = {
   city: CityName;
@@ -47,20 +47,9 @@ export default createReducer(initialState, (builder) => {
         state.offers = newSelectedSorting === DEFAULT_SORTING_ORDER ? initialState.offers : state.offers.sort(comparators[newSelectedSorting]);
       }
     )
-    .addCase(
-      loadOffersAction,
-      (state, action) => {
-        state.offers = action.payload;
-      }
-    )
-    .addCase(
-      loadOfferByIdAction,
-      (state, action) => {
-        state.selectedOfferCard = action.payload;
-      }
-    )
-    .addCase(fetchOffersByIdAction.fulfilled, (state) => {
+    .addCase(fetchOffersByIdAction.fulfilled, (state, action) => {
       state.isSelectedOfferCardLoading = false;
+      state.selectedOfferCard = action.payload;
     })
     .addCase(fetchOffersByIdAction.rejected, (state) => {
       state.isSelectedOfferCardLoading = false;
@@ -75,15 +64,13 @@ export default createReducer(initialState, (builder) => {
     .addCase(fetchOffersAction.rejected, (state) => {
       state.isOffersDataLoading = false;
     })
-    .addCase(fetchOffersAction.fulfilled, (state) => {
+    .addCase(fetchOffersAction.fulfilled, (state, action) => {
       state.isOffersDataLoading = false;
+      state.offers = action.payload;
     })
-    .addCase(
-      requireAuthorizationAction,
-      (state, action) => {
-        state.authorizationStatus = action.payload;
-      }
-    )
+    .addCase(loginAction.fulfilled, (state, action) => {
+      state.authorizationStatus = action.payload;
+    })
     .addCase(
       setError,
       (state, action) => {
