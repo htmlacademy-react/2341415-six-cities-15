@@ -33,7 +33,6 @@ function App(): JSX.Element {
   return (
     <>
       <ErrorMessage />
-
       <BrowserRouter>
         <Routes>
           <Route path={AppRoute.Main} element={<Layout />}>

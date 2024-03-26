@@ -45,6 +45,7 @@ function Layout(): JSX.Element {
                         to={AppRoute.Favorites}
                       >
                         <div className="header__avatar-wrapper user__avatar-wrapper">
+                          <img className="header__avatar user__avatar" src={user?.avatarUrl} alt="User avatar" />
                         </div>
                         {authorizationStatus === AuthorizationStatus.Auth ? (
                           <>
