@@ -5,16 +5,24 @@ import FavoritesScreen from '../pages/favorites-screen/favorites-screen';
 import LoginScreen from '../pages/login-screen/login-screen';
 import OfferScreen from '../pages/offer-screen/offer-screen';
 import PrivateRoute from '../components/private-route/private-route';
-import { AppRoute } from '../const';
+import { AppRoute, DEFAULT_CITY } from '../const';
 import Layout from './layout';
 import ErrorMessage from '../components/error-message/error-message';
-import { useAppSelector } from '../hooks/app-dispatch';
+import { useAppDispatch, useAppSelector } from '../hooks/app-dispatch';
 import LoadingScreen from '../pages/loading-screen/loading-screen';
+import { useEffect } from 'react';
+import { checkAuthAction, fetchOffersAction } from '../store/api-actions';
 
 function App(): JSX.Element {
   const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
   const isOffersDataLoading = useAppSelector((state) => state.isOffersDataLoading);
   const offers = useAppSelector((state) => state.offers);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchOffersAction(DEFAULT_CITY));
+    dispatch(checkAuthAction());
+  },[dispatch]);
 
   if(isOffersDataLoading) {
     return (

@@ -1,9 +1,9 @@
 import {createReducer} from '@reduxjs/toolkit';
 import { AuthorizationStatus, DEFAULT_CITY, DEFAULT_SORTING_ORDER, SortVariants } from '../const';
-import { CityName, Offer, OfferCard } from '../types';
-import { cityChangeAction, sortingOrderChangeAction, loadOffersAction, requireAuthorizationAction, setError, loadOfferByIdAction } from './action';
+import { CityName, Offer, OfferCard, UserData } from '../types';
+import { cityChangeAction, sortingOrderChangeAction, setError } from './action';
 import { comparators } from '../utils';
-import { fetchOffersAction, fetchOffersByIdAction } from './api-actions';
+import { checkAuthAction, fetchOffersAction, fetchOffersByIdAction, loginAction, logoutAction } from './api-actions';
 
 type OfferState = {
   city: CityName;
@@ -16,6 +16,7 @@ type OfferState = {
   isSelectedOfferCardLoading: boolean;
   selectedOfferCard: OfferCard | null;
   neighbours: Offer[];
+  user: UserData | null;
 }
 
 const initialState: OfferState = {
@@ -29,6 +30,7 @@ const initialState: OfferState = {
   isSelectedOfferCardLoading: false,
   selectedOfferCard: null,
   neighbours: [],
+  user: null,
 };
 
 export default createReducer(initialState, (builder) => {
@@ -48,19 +50,18 @@ export default createReducer(initialState, (builder) => {
       }
     )
     .addCase(
-      loadOffersAction,
+      checkAuthAction.fulfilled,
       (state, action) => {
-        state.offers = action.payload;
-      }
-    )
-    .addCase(
-      loadOfferByIdAction,
-      (state, action) => {
-        state.selectedOfferCard = action.payload;
-      }
-    )
-    .addCase(fetchOffersByIdAction.fulfilled, (state) => {
+        state.user = action.payload;
+        if(action.payload === null) {
+          state.authorizationStatus = AuthorizationStatus.NoAuth;
+        } else {
+          state.authorizationStatus = AuthorizationStatus.Auth;
+        }
+      })
+    .addCase(fetchOffersByIdAction.fulfilled, (state, action) => {
       state.isSelectedOfferCardLoading = false;
+      state.selectedOfferCard = action.payload;
     })
     .addCase(fetchOffersByIdAction.rejected, (state) => {
       state.isSelectedOfferCardLoading = false;
@@ -75,15 +76,18 @@ export default createReducer(initialState, (builder) => {
     .addCase(fetchOffersAction.rejected, (state) => {
       state.isOffersDataLoading = false;
     })
-    .addCase(fetchOffersAction.fulfilled, (state) => {
+    .addCase(fetchOffersAction.fulfilled, (state, action) => {
       state.isOffersDataLoading = false;
+      state.offers = action.payload;
     })
-    .addCase(
-      requireAuthorizationAction,
-      (state, action) => {
-        state.authorizationStatus = action.payload;
-      }
-    )
+    .addCase(loginAction.fulfilled, (state, action) => {
+      state.authorizationStatus = AuthorizationStatus.Auth;
+      state.user = action.payload;
+    })
+    .addCase(logoutAction.fulfilled, (state) => {
+      state.authorizationStatus = AuthorizationStatus.NoAuth;
+      state.user = null;
+    })
     .addCase(
       setError,
       (state, action) => {

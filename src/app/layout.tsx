@@ -1,21 +1,24 @@
 import { Outlet, useLocation, Link } from 'react-router-dom';
 import { AppRoute, AuthorizationStatus, DEFAULT_CITY } from '../const';
 import { getLayoutState } from '../utils';
-import { getAuthorizationStatus } from '../pages/authorization-status';
 import { useAppDispatch, useAppSelector } from '../hooks/app-dispatch';
 import { cityChangeAction } from '../store/action';
-import { fetchOffersAction } from '../store/api-actions';
+import { fetchOffersAction, logoutAction } from '../store/api-actions';
 
 function Layout(): JSX.Element {
   const { pathname } = useLocation();
   const { rootClassName, linkClassName, shouldRenderUser, shouldRenderFooter } = getLayoutState(pathname as AppRoute);
-  const authorizationStatus = getAuthorizationStatus();
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
   const favoriteOffersCount = useAppSelector((state) => state.favoriteOffers);
+  const user = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
   function handleLogoClick() {
     dispatch(cityChangeAction(DEFAULT_CITY));
     dispatch(fetchOffersAction(DEFAULT_CITY));
+  }
+  function handleLogoutClick() {
+    dispatch(logoutAction());
   }
 
   return (
@@ -42,10 +45,11 @@ function Layout(): JSX.Element {
                         to={AppRoute.Favorites}
                       >
                         <div className="header__avatar-wrapper user__avatar-wrapper">
+                          <img className="header__avatar user__avatar" src={user?.avatarUrl} alt="User avatar" />
                         </div>
                         {authorizationStatus === AuthorizationStatus.Auth ? (
                           <>
-                            <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
+                            <span className="header__user-name user__name">{user?.email}</span>
                             <span className="header__favorite-count">{favoriteOffersCount.length}</span>
                           </>
                         ) : <span className="header__login">Sign in</span>}
@@ -53,7 +57,10 @@ function Layout(): JSX.Element {
                     </li>
                     {authorizationStatus === AuthorizationStatus.Auth ? (
                       <li className="header__nav-item">
-                        <a className="header__nav-link" href="#">
+                        <a
+                          onClick={handleLogoutClick}
+                          className="header__nav-link" href="#"
+                        >
                           <span className="header__signout">Sign out</span>
                         </a>
                       </li>
