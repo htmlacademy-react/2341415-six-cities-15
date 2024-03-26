@@ -3,7 +3,6 @@ import App from './app/app';
 import { Provider } from 'react-redux';
 import store from './store/store';
 import { StrictMode } from 'react';
-import AppPreloader from './app/app-preloader';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -12,9 +11,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <StrictMode>
     <Provider store={store}>
-      <AppPreloader>
-        <App/>
-      </AppPreloader>
+      <App/>
     </Provider>
   </StrictMode>
 );
