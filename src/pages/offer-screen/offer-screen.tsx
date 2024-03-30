@@ -1,30 +1,23 @@
 import { AuthorizationStatus } from '../../const';
-import NotFoundPage from '../error-screen/error-404-screen';
 import { getRatingPercentage, offerToPoint } from '../../utils';
 import { MAX_RATING } from '../../const';
 import OfferCommentsForm from '../../forms/offer-comments-form';
 import CommentList from '../../components/comment/comment-list';
-import { comments } from '../../mocks/comments';
 import CityMap from '../../components/map/map';
 import { cityLocation } from '../../mocks/city-locations';
 import NearestCardsList from '../../components/cards/nearest-cards-list';
 import cn from 'classnames';
 import { useAppSelector } from '../../hooks/app-dispatch';
-import LoadingScreen from '../loading-screen/loading-screen';
+import { Comment, Offer, OfferCard } from '../../types';
 
-function OfferScreen(): JSX.Element {
+type Props = {
+  selectedOffer: OfferCard;
+  comments: Comment[];
+  neighbours: Offer[];
+}
+
+function OfferScreen({ selectedOffer, comments, neighbours }: Props): JSX.Element {
   const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
-  const selectedOffer = useAppSelector((state) => state.selectedOfferCard);
-  const isSelectedOfferCardLoading = useAppSelector((state) => state.isSelectedOfferCardLoading);
-  const neighbours = useAppSelector((state) => state.neighbours);
-
-  if(isSelectedOfferCardLoading) {
-    return <LoadingScreen />;
-  }
-
-  if(!selectedOffer){
-    return <NotFoundPage />;
-  }
 
   const bookmarksButtonClassName = `offer__bookmark-button button${selectedOffer.isFavorite ? ' offer__bookmark-button--active' : ''}`;
 

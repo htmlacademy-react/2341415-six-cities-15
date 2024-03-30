@@ -7,9 +7,9 @@ import { fetchOffersAction, logoutAction } from '../store/api-actions';
 
 function Layout(): JSX.Element {
   const { pathname } = useLocation();
-  const { rootClassName, linkClassName, shouldRenderUser, shouldRenderFooter } = getLayoutState(pathname as AppRoute);
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
   const favoriteOffersCount = useAppSelector((state) => state.favoriteOffers);
+  const { rootClassName, linkClassName, shouldRenderUser, shouldRenderFooter } = getLayoutState(pathname as AppRoute, favoriteOffersCount.length);
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
   const user = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
@@ -45,7 +45,9 @@ function Layout(): JSX.Element {
                         to={AppRoute.Favorites}
                       >
                         <div className="header__avatar-wrapper user__avatar-wrapper">
-                          <img className="header__avatar user__avatar" src={user?.avatarUrl} alt="User avatar" />
+                          {authorizationStatus === AuthorizationStatus.Auth ? (
+                            <img className="header__avatar user__avatar" src={user?.avatarUrl} alt="User avatar" />
+                          ) : null}
                         </div>
                         {authorizationStatus === AuthorizationStatus.Auth ? (
                           <>
