@@ -4,9 +4,10 @@ import {saveToken, dropToken, getToken} from '../services/token';
 import { TIMEOUT_SHOW_ERROR } from '../const';
 import { AppDispatch } from '../hooks/app-dispatch';
 import { State } from './store';
-import { AuthData, CityName, Offer, OfferCard, UserData } from '../types.js';
+import { AuthData, CityName, Offer, OfferCard, UserData, Comment, Review } from '../types.js';
 import { OfferApi } from '../services/offer-api.js';
 import { UserApi } from '../services/user-api.js';
+import { CommentsApi } from '../services/comments-api.js';
 
 export const clearErrorAction = createAsyncThunk(
   'clearError',
@@ -34,6 +35,24 @@ export const fetchOffersByIdAction = createAsyncThunk<OfferCard, string, {
 }>(
   'fetchOffersByIdAction/offers/id',
   (id, { extra: { offerApi }}) => offerApi.getBy(id),
+);
+
+export const fetchOffersNearbyAction = createAsyncThunk<Offer[], string, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: { offerApi: OfferApi };
+}>(
+  'fetchOffersNearbyAction/offers/id/nearby',
+  (id, { extra: { offerApi }}) => offerApi.getNearby(id),
+);
+
+export const fetchCommentsAction = createAsyncThunk<Comment[], string, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: { commentsApi: CommentsApi };
+}>(
+  'fetchCommentsAction/offers/id',
+  (id, { extra: { commentsApi }}) => commentsApi.getList(id),
 );
 
 export const checkAuthAction = createAsyncThunk<UserData | null, undefined, {
@@ -79,4 +98,13 @@ export const logoutAction = createAsyncThunk<void, undefined, {
     await userApi.logout();
     dropToken();
   },
+);
+
+export const fetchReviewAction = createAsyncThunk<Comment, Review, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: { commentsApi: CommentsApi };
+}>(
+  'fetchReviewAction/offers/id',
+  (review, { extra: { commentsApi } }) => commentsApi.sendReview(review)
 );

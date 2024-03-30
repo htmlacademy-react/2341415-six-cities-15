@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import NotFoundPage from '../pages/error-screen/error-404-screen';
 import FavoritesScreen from '../pages/favorites-screen/favorites-screen';
 import LoginScreen from '../pages/login-screen/login-screen';
-import OfferScreen from '../pages/offer-screen/offer-screen';
 import PrivateRoute from '../components/private-route/private-route';
 import { AppRoute, DEFAULT_CITY } from '../const';
 import Layout from './layout';
@@ -12,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '../hooks/app-dispatch';
 import LoadingScreen from '../pages/loading-screen/loading-screen';
 import { useEffect } from 'react';
 import { checkAuthAction, fetchOffersAction } from '../store/api-actions';
+import OfferScreenPreloader from '../pages/offer-screen/offer-screen-preloader';
 
 function App(): JSX.Element {
   const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
@@ -49,8 +49,9 @@ function App(): JSX.Element {
               </PrivateRoute>
             }
             />
-            <Route path={AppRoute.Offer} element={<OfferScreen />}>
-              <Route path={AppRoute.OfferId} element={<OfferScreen />} />
+            <Route path={AppRoute.Offer} >
+              <Route index element={<NotFoundPage />} />
+              <Route path={AppRoute.OfferId} element={<OfferScreenPreloader />} />
             </Route>
             <Route path='*' element={<NotFoundPage />} />
           </Route>

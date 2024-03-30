@@ -73,6 +73,12 @@ export type Comment = {
   rating: number;
 };
 
+export type Review = {
+  id: string;
+  comment: string;
+  rating: number;
+};
+
 export type AuthData = {
   login: string;
   password: string;

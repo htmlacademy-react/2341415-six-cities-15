@@ -3,8 +3,9 @@ import { format } from 'date-fns';
 import { Offer } from './types';
 import { Point } from './components/map/types';
 import { SortVariants } from './const';
+import { SerializedError } from '@reduxjs/toolkit';
 
-export function getLayoutState(pathname: AppRoute) {
+export function getLayoutState(pathname: AppRoute, favoritesCount: number) {
   let rootClassName = '';
   let linkClassName = '';
   let shouldRenderUser = true;
@@ -19,6 +20,10 @@ export function getLayoutState(pathname: AppRoute) {
     shouldRenderUser = false;
   } else if(pathname === AppRoute.Favorites){
     shouldRenderFooter = true;
+    if(!favoritesCount) {
+      rootClassName = ' page--favorites-empty';
+      shouldRenderFooter = false;
+    }
   }
 
   return { rootClassName, linkClassName, shouldRenderUser, shouldRenderFooter };
@@ -41,6 +46,10 @@ export function offerToPoint(offer: Offer): Point {
     lat: location.latitude,
     lng: location.longitude,
   };
+}
+
+export function isNotFoundError(err: SerializedError): boolean {
+  return err.message?.includes('404') ?? false;
 }
 
 type Comparator = (offer1: Offer, offer2: Offer) => number;

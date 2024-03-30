@@ -3,8 +3,6 @@ import { AppRoute, MAX_RATING } from '../../const';
 import { getRatingPercentage } from '../../utils';
 import { Link } from 'react-router-dom';
 import { ReactNode } from 'react';
-import { fetchOffersByIdAction } from '../../store/api-actions';
-import { useAppDispatch } from '../../hooks/app-dispatch';
 
 export type Props = {
   id: string;
@@ -23,14 +21,9 @@ export type Props = {
 function Card ({ id, isPremium, children, price, rating, title, type, isFavorite, className, onMouseEnter, onMouseLeave }: Props): JSX.Element {
 
   const bookmarksButtonClassName = `place-card__bookmark-button button${isFavorite ? ' place-card__bookmark-button--active' : ''}`;
-  const dispatch = useAppDispatch();
-
-  function handleClick() {
-    dispatch(fetchOffersByIdAction(id));
-  }
 
   return (
-    <Link onClick={handleClick} to={`${AppRoute.Offer}${id}`}>
+    <Link to={`${AppRoute.Offer}${id}`}>
       <article
         onMouseEnter={onMouseEnter ? () => onMouseEnter(id) : undefined}
         onMouseLeave={onMouseLeave}
