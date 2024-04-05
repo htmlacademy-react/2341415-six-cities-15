@@ -11,9 +11,9 @@ function OfferScreenPreloader(): JSX.Element {
   const dispatch = useAppDispatch();
   const { id } = useParams();
 
-  const selectedOffer = useAppSelector((state) => state.selectedOfferCard);
-  const neighbours = useAppSelector((state) => state.neighbours);
-  const comments = useAppSelector((state) => state.comments);
+  const selectedOffer = useAppSelector((state) => state.other.selectedOfferCard);
+  const neighbours = useAppSelector((state) => state.other.neighbours);
+  const comments = useAppSelector((state) => state.other.comments);
 
   function isOtherOfferLoaded(): boolean {
     return typeof selectedOffer === 'object' && selectedOffer?.id !== id;

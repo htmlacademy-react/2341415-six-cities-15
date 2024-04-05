@@ -1,8 +1,8 @@
 import { MouseEvent, useState } from 'react';
 import { SortVariants } from '../../const';
 import cn from 'classnames';
-import { sortingOrderChangeAction } from '../../store/action';
 import { useAppDispatch } from '../../hooks/app-dispatch';
+import { sortingOrderChangeAction } from '../../store/city-offers-slice';
 
 type Props = {
   selectedSorting: SortVariants;

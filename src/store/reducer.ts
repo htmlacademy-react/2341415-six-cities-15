@@ -1,57 +1,30 @@
 import {createReducer} from '@reduxjs/toolkit';
-import { AuthorizationStatus, DEFAULT_CITY, DEFAULT_SORTING_ORDER, IS_LOADING, NOT_FOUND, SortVariants } from '../const';
-import { CityName, Offer, OfferCard, UserData, Comment, Review } from '../types';
-import { cityChangeAction, sortingOrderChangeAction, setError } from './action';
-import { comparators, isNotFoundError } from '../utils';
-import { checkAuthAction, fetchCommentsAction, fetchOffersAction, fetchOffersByIdAction, fetchOffersNearbyAction, fetchReviewAction, loginAction, logoutAction } from './api-actions';
+import { AuthorizationStatus, IS_LOADING, NOT_FOUND } from '../const';
+import { Offer, OfferCard, UserData, Comment } from '../types';
+import { setError } from './action';
+import { isNotFoundError } from '../utils';
+import { checkAuthAction, fetchCommentsAction, fetchOffersByIdAction, fetchOffersNearbyAction, fetchReviewAction, loginAction, logoutAction } from './api-actions';
 
 type OfferState = {
-  city: CityName;
-  offers: Offer[];
-  selectedSorting: SortVariants;
-  favoriteOffers: Offer[];
   authorizationStatus: AuthorizationStatus;
   error: string | null;
-  isOffersDataLoading: boolean;
   selectedOfferCard: OfferCard | null | typeof IS_LOADING | typeof NOT_FOUND;
   neighbours: Offer[];
   user: UserData | null;
   comments: Comment[];
-  review: Review | null;
 }
 
 const initialState: OfferState = {
-  city: DEFAULT_CITY,
-  offers: [],
-  selectedSorting: DEFAULT_SORTING_ORDER,
-  favoriteOffers: [],
   authorizationStatus: AuthorizationStatus.NoAuth,
   error: null,
-  isOffersDataLoading: false,
   selectedOfferCard: null,
   neighbours: [],
   user: null,
   comments: [],
-  review: null
-
 };
 
 export default createReducer(initialState, (builder) => {
   builder
-    .addCase(
-      cityChangeAction,
-      (state, action) => {
-        const newCityName = action.payload;
-        state.city = newCityName;
-      })
-    .addCase(
-      sortingOrderChangeAction,
-      (state, action) => {
-        const newSelectedSorting = action.payload;
-        state.selectedSorting = newSelectedSorting;
-        state.offers = newSelectedSorting === DEFAULT_SORTING_ORDER ? initialState.offers : state.offers.sort(comparators[newSelectedSorting]);
-      }
-    )
     .addCase(
       checkAuthAction.fulfilled,
       (state, action) => {
@@ -78,16 +51,6 @@ export default createReducer(initialState, (builder) => {
     })
     .addCase(fetchOffersNearbyAction.rejected, (state) => {
       state.neighbours = [];
-    })
-    .addCase(fetchOffersAction.pending, (state) => {
-      state.isOffersDataLoading = true;
-    })
-    .addCase(fetchOffersAction.rejected, (state) => {
-      state.isOffersDataLoading = false;
-    })
-    .addCase(fetchOffersAction.fulfilled, (state, action) => {
-      state.isOffersDataLoading = false;
-      state.offers = action.payload;
     })
     .addCase(fetchCommentsAction.rejected, (state) => {
       state.comments = [];

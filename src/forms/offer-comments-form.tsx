@@ -7,7 +7,7 @@ function OfferCommentsForm(): JSX.Element {
   const dispatch = useAppDispatch();
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState('');
-  const id = useAppSelector((state) => (state.selectedOfferCard as OfferCard).id);
+  const id = useAppSelector((state) => (state.other.selectedOfferCard as OfferCard).id);
 
   function handleRatingChange(evt: FormEvent<HTMLInputElement>) {
     evt.preventDefault();

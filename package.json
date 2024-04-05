@@ -10,7 +10,7 @@
     "test": "vitest --passWithNoTests"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "1.9.7",
+    "@reduxjs/toolkit": "2.2.3",
     "axios": "1.5.1",
     "classnames": "2.3.2",
     "date-fns": "3.3.1",

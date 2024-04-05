@@ -15,12 +15,9 @@ export default function CardsList({ offers, onCardMouseEnter, onCardMouseLeave }
         className='cities__card'
         onMouseEnter={onCardMouseEnter}
         onMouseLeave={onCardMouseLeave}
+        imgWrapperClassName='cities__image-wrapper place-card__image-wrapper'
         {...offer}
-      >
-        <div className="cities__image-wrapper place-card__image-wrapper">
-          <img className="place-card__image" src={offer.previewImage} width="260" height="200" alt="Place image" />
-        </div>
-      </ Card>
+      />
     );
   }
 

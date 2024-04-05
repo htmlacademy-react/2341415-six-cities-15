@@ -2,22 +2,21 @@ import CardsList from '../../components/cards/cards-list';
 import { CityName } from '../../types';
 import { CITIES } from '../../const';
 import Tabs from '../../components/tabs/tabs';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import CityMap from '../../components/map/map';
 import { cityLocation } from '../../mocks/city-locations';
 import { offerToPoint } from '../../utils';
 import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
-import { cityChangeAction } from '../../store/action';
 import Sort from '../../components/sort/sort';
-import { fetchOffersAction } from '../../store/api-actions';
 import LoadingScreen from '../loading-screen/loading-screen';
+import { cityChangeAction, fetchOffersAction, selectCity, selectIsOffersDataLoading, selectOffers, selectSorting } from '../../store/city-offers-slice';
 
 function MainScreen(): JSX.Element {
   const [selectedOfferId, setActiveOfferId] = useState<undefined | string>(undefined);
   const dispatch = useAppDispatch();
-  const selectedCity = useAppSelector((state) => state.city);
-  const cityOffers = useAppSelector((state) => state.offers);
-  const isOffersDataLoading = useAppSelector((state) => state.isOffersDataLoading);
+  const selectedCity = useAppSelector(selectCity);
+  const cityOffers = useAppSelector(selectOffers);
+  const isOffersDataLoading = useAppSelector(selectIsOffersDataLoading);
 
   const onTabClick = (cityName: CityName) => {
     const action = cityChangeAction(cityName);
@@ -25,7 +24,9 @@ function MainScreen(): JSX.Element {
     dispatch(fetchOffersAction(cityName));
   };
 
-  const selectedSorting = useAppSelector((state) => state.selectedSorting);
+  const selectedSorting = useAppSelector(selectSorting);
+
+  const handleCardMouseLeave = useCallback(() => setActiveOfferId(undefined),[]);
 
   if(isOffersDataLoading) {
     return <LoadingScreen />;
@@ -48,7 +49,7 @@ function MainScreen(): JSX.Element {
             <b className="places__found">{cityOffers.length} places to stay in {selectedCity}</b>
             <Sort selectedSorting={selectedSorting}/>
             <div className="cities__places-list places__list tabs__content">
-              <CardsList offers={cityOffers} onCardMouseEnter={setActiveOfferId} onCardMouseLeave={() => setActiveOfferId(undefined)} />
+              <CardsList offers={cityOffers} onCardMouseEnter={setActiveOfferId} onCardMouseLeave={handleCardMouseLeave} />
             </div>
           </section>
           <div className="cities__right-section">

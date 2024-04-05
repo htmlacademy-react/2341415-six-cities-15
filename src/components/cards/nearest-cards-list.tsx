@@ -12,11 +12,8 @@ export default function NearestCardsList({ offers }: Props): JSX.Element {
         key={offer.id}
         {...offer}
         className='near-places__card'
-      >
-        <div className="near-places__image-wrapper place-card__image-wrapper">
-          <img className="place-card__image" src={offer.previewImage} width="260" height="200" alt="Place image" />
-        </div>
-      </ Card>
+        imgWrapperClassName='near-places__image-wrapper place-card__image-wrapper'
+      />
     );
   }
 
