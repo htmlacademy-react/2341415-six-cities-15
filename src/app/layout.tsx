@@ -2,15 +2,16 @@ import { Outlet, useLocation, Link } from 'react-router-dom';
 import { AppRoute, AuthorizationStatus, DEFAULT_CITY } from '../const';
 import { getLayoutState } from '../utils';
 import { useAppDispatch, useAppSelector } from '../hooks/app-dispatch';
-import { cityChangeAction } from '../store/action';
-import { fetchOffersAction, logoutAction } from '../store/api-actions';
+import { logoutAction } from '../store/api-actions';
+import { cityChangeAction, fetchOffersAction } from '../store/city-offers-slice';
+import { selectFavoriteOffers } from '../store/city-offers-slice';
 
 function Layout(): JSX.Element {
   const { pathname } = useLocation();
-  const favoriteOffersCount = useAppSelector((state) => state.favoriteOffers);
+  const favoriteOffersCount = useAppSelector(selectFavoriteOffers);
   const { rootClassName, linkClassName, shouldRenderUser, shouldRenderFooter } = getLayoutState(pathname as AppRoute, favoriteOffersCount.length);
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
-  const user = useAppSelector((state) => state.user);
+  const authorizationStatus = useAppSelector((state) => state.other.authorizationStatus);
+  const user = useAppSelector((state) => state.other.user);
   const dispatch = useAppDispatch();
 
   function handleLogoClick() {

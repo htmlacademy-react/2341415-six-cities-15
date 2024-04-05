@@ -17,7 +17,7 @@ type Props = {
 }
 
 function OfferScreen({ selectedOffer, comments, neighbours }: Props): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const authorizationStatus = useAppSelector((state) => state.other.authorizationStatus);
 
   const bookmarksButtonClassName = `offer__bookmark-button button${selectedOffer.isFavorite ? ' offer__bookmark-button--active' : ''}`;
 

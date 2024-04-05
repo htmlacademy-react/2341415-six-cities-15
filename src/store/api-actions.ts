@@ -4,7 +4,7 @@ import {saveToken, dropToken, getToken} from '../services/token';
 import { TIMEOUT_SHOW_ERROR } from '../const';
 import { AppDispatch } from '../hooks/app-dispatch';
 import { State } from './store';
-import { AuthData, CityName, Offer, OfferCard, UserData, Comment, Review } from '../types.js';
+import { AuthData, Offer, OfferCard, UserData, Comment, Review } from '../types.js';
 import { OfferApi } from '../services/offer-api.js';
 import { UserApi } from '../services/user-api.js';
 import { CommentsApi } from '../services/comments-api.js';
@@ -17,15 +17,6 @@ export const clearErrorAction = createAsyncThunk(
       TIMEOUT_SHOW_ERROR,
     );
   },
-);
-
-export const fetchOffersAction = createAsyncThunk<Offer[], CityName, {
-  dispatch: AppDispatch;
-  state: State;
-  extra: { offerApi: OfferApi };
-}>(
-  'fetchOffersAction/offers',
-  (cityName, { extra: { offerApi }}) => offerApi.getList(cityName),
 );
 
 export const fetchOffersByIdAction = createAsyncThunk<OfferCard, string, {

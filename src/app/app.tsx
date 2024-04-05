@@ -10,18 +10,20 @@ import ErrorMessage from '../components/error-message/error-message';
 import { useAppDispatch, useAppSelector } from '../hooks/app-dispatch';
 import LoadingScreen from '../pages/loading-screen/loading-screen';
 import { useEffect } from 'react';
-import { checkAuthAction, fetchOffersAction } from '../store/api-actions';
+import { checkAuthAction } from '../store/api-actions';
 import OfferScreenPreloader from '../pages/offer-screen/offer-screen-preloader';
+import { fetchOffersAction, selectIsOffersDataLoading } from '../store/city-offers-slice';
+import { fetchFavoritesAction } from '../store/city-offers-slice';
 
 function App(): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
-  const isOffersDataLoading = useAppSelector((state) => state.isOffersDataLoading);
-  const offers = useAppSelector((state) => state.offers);
+  const authorizationStatus = useAppSelector((state) => state.other.authorizationStatus);
+  const isOffersDataLoading = useAppSelector(selectIsOffersDataLoading);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(fetchOffersAction(DEFAULT_CITY));
     dispatch(checkAuthAction());
+    dispatch(fetchFavoritesAction());
   },[dispatch]);
 
   if(isOffersDataLoading) {
@@ -39,7 +41,7 @@ function App(): JSX.Element {
             <Route index element={<MainScreen />} />
             <Route path={AppRoute.Favorites} element={
               <PrivateRoute authorizationStatus={authorizationStatus}>
-                <FavoritesScreen offers={offers.filter((offer) => offer.isFavorite === true)}/>
+                <FavoritesScreen />
               </PrivateRoute>
             }
             />

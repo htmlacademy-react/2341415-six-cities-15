@@ -1,20 +1,17 @@
-import { CityName } from '../../types';
-import { FavoriteCardProps } from './favorite-card';
+import { groupBy } from 'lodash';
+import { useAppSelector } from '../../hooks/app-dispatch';
+import { selectFavoriteOffers } from '../../store/city-offers-slice';
 import FavoriteListItem from './favorite-list-item';
 
-type Props = {
-  [key in CityName]: FavoriteCardProps[];
-}
+function FavoriteList(): JSX.Element {
+  const favorites = useAppSelector(selectFavoriteOffers);
+  const groupedFavorites = groupBy(favorites, 'city.name');
 
-function FavoriteList(props: Props): JSX.Element {
   return (
     <ul className="favorites__list">
-      {Object.entries(props).map(([cityName, cityOffers]) => <FavoriteListItem key={cityName} cityName={cityName} cityOffers={cityOffers} />)}
+      {Object.entries(groupedFavorites).map(([cityName, cityOffers]) => <FavoriteListItem key={cityName} cityName={cityName} cityOffers={cityOffers} />)}
     </ul>
   );
 }
 
 export default FavoriteList;
-export type {
-  Props as FavoriteListProps
-};
