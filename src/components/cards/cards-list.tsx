@@ -17,8 +17,7 @@ export default function CardsList({ offers, onCardMouseEnter, onCardMouseLeave }
         onMouseLeave={onCardMouseLeave}
         imgWrapperClassName='cities__image-wrapper place-card__image-wrapper'
         {...offer}
-      >
-      </ Card>
+      />
     );
   }
 

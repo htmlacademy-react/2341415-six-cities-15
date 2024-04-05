@@ -13,8 +13,7 @@ export default function NearestCardsList({ offers }: Props): JSX.Element {
         {...offer}
         className='near-places__card'
         imgWrapperClassName='near-places__image-wrapper place-card__image-wrapper'
-      >
-      </ Card>
+      />
     );
   }
 
