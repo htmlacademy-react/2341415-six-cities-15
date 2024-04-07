@@ -1,6 +1,6 @@
 import { FormEvent, useRef } from 'react';
 import { useAppDispatch } from '../../hooks/app-dispatch';
-import { loginAction } from '../../store/api-actions';
+import { loginAction } from '../../store/auth-slice';
 
 function LoginScreen(): JSX.Element {
   const emailRef = useRef('');

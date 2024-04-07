@@ -2,8 +2,7 @@ import { buildCreateSlice, asyncThunkCreator } from '@reduxjs/toolkit';
 import { DEFAULT_CITY, DEFAULT_SORTING_ORDER, SortVariants } from '../const';
 import { CityName, Offer } from '../types';
 import { OfferApi } from '../services/offer-api';
-import { comparators } from '../utils';
-import { FavoritesApi } from '../services/favorites-api';
+import { COMPARATORS } from '../utils';
 
 const createSliceWithThunks = buildCreateSlice({
   creators: { asyncThunk: asyncThunkCreator },
@@ -14,7 +13,6 @@ type OfferState = {
   offers: Offer[];
   selectedSorting: SortVariants;
   isOffersDataLoading: boolean;
-  favoriteOffers: Offer[];
 }
 
 const initialState: OfferState = {
@@ -22,7 +20,6 @@ const initialState: OfferState = {
   offers: [],
   selectedSorting: DEFAULT_SORTING_ORDER,
   isOffersDataLoading: false,
-  favoriteOffers: []
 };
 
 const cityOffersSlice = createSliceWithThunks({
@@ -33,7 +30,6 @@ const cityOffersSlice = createSliceWithThunks({
     selectOffers: (state) => state.offers,
     selectCity: (state) => state.city,
     selectSorting: (state) => state.selectedSorting,
-    selectFavoriteOffers: (state) => state.favoriteOffers,
   },
   reducers: (create) => ({
     cityChangeAction: create.reducer<CityName>((state, action) => {
@@ -42,7 +38,7 @@ const cityOffersSlice = createSliceWithThunks({
     sortingOrderChangeAction: create.reducer<SortVariants>((state, action) => {
       const newSelectedSorting = action.payload;
       state.selectedSorting = newSelectedSorting;
-      state.offers = newSelectedSorting === DEFAULT_SORTING_ORDER ? initialState.offers : state.offers.sort(comparators[newSelectedSorting]);
+      state.offers = newSelectedSorting === DEFAULT_SORTING_ORDER ? initialState.offers : state.offers.sort(COMPARATORS[newSelectedSorting]);
     }),
     fetchOffersAction: create.asyncThunk<Offer[], CityName, { extra: { offerApi: OfferApi }}>(
       async (cityName, { extra: { offerApi }}) => offerApi.getList(cityName),
@@ -59,41 +55,13 @@ const cityOffersSlice = createSliceWithThunks({
         },
       }
     ),
-    fetchFavoritesAction: create.asyncThunk<Offer[], undefined, { extra: { favoritesApi: FavoritesApi }}>(
-      async (_arg, { extra: { favoritesApi }}) => favoritesApi.getList(),
-      {
-        fulfilled: (state, action) => {
-          state.favoriteOffers = action.payload;
-        },
-      }
-    ),
-    fetchIsFavoritesAction: create.asyncThunk<Offer, { id: string; isFavorite: boolean }, { extra: { favoritesApi: FavoritesApi } }>(
-      async ({ id, isFavorite }, { extra: { favoritesApi } }) => {
-        const offer = await favoritesApi.changeIsFavorite(id, isFavorite);
-        favoritesApi.getList();
-        return offer;
-      },
-      {
-        fulfilled: (state, action) => {
-          const updatedOffer = action.payload;
-
-          if (updatedOffer.isFavorite){
-            state.favoriteOffers = [...state.favoriteOffers, updatedOffer];
-          } else {
-            state.favoriteOffers = state.favoriteOffers.filter((offer) => offer.id !== updatedOffer.id);
-          }
-
-          const offer = state.offers.find((item) => item.id === updatedOffer.id);
-
-          if (offer) {
-            offer.isFavorite = updatedOffer.isFavorite;
-          }
-        },
-      }
-    )
   }),
 });
 
 export default cityOffersSlice;
-export const { fetchOffersAction, cityChangeAction, sortingOrderChangeAction, fetchFavoritesAction, fetchIsFavoritesAction } = cityOffersSlice.actions;
-export const { selectIsOffersDataLoading, selectOffers, selectCity, selectSorting, selectFavoriteOffers } = cityOffersSlice.selectors;
+export const {
+  fetchOffersAction,
+  cityChangeAction,
+  sortingOrderChangeAction,
+} = cityOffersSlice.actions;
+export const { selectIsOffersDataLoading, selectOffers, selectCity, selectSorting } = cityOffersSlice.selectors;

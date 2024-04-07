@@ -1,17 +1,17 @@
 import { OfferType } from '../../types';
-import { AppRoute, MAX_RATING } from '../../const';
+import { AppRoute, AuthorizationStatus, MAX_RATING } from '../../const';
 import { getRatingPercentage } from '../../utils';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { memo } from 'react';
-import { useAppDispatch } from '../../hooks/app-dispatch';
-import { fetchIsFavoritesAction } from '../../store/city-offers-slice';
+import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
+import { fetchIsFavoritesAction, selectAuthorizationStatus, selectFavoriteOffers } from '../../store/auth-slice';
+import { clearOfferDataAction, fetchOfferCardDataAction } from '../../store/offer-card-slice';
 
 export type Props = {
   id: string;
   title: string;
   type: OfferType;
   price: number;
-  isFavorite: boolean;
   isPremium: boolean;
   rating: number;
   className: string;
@@ -21,19 +21,33 @@ export type Props = {
   onMouseLeave?: () => void;
 };
 
-function Card ({ id, isPremium, price, rating, title, type, isFavorite, className, previewImage, imgWrapperClassName, onMouseEnter, onMouseLeave }: Props): JSX.Element {
+function Card ({ id, isPremium, price, rating, title, type, className, previewImage, imgWrapperClassName, onMouseEnter, onMouseLeave }: Props): JSX.Element {
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const authorizationStatus = useAppSelector(selectAuthorizationStatus);
+  const favoriteOffers = useAppSelector(selectFavoriteOffers);
+  const isFavorite = favoriteOffers.some((offer) => offer.id === id);
 
   const onFavoriteButtonClick: React.MouseEventHandler = (evt) => {
     evt.preventDefault();
-    dispatch(fetchIsFavoritesAction({id, isFavorite}));
+
+    if (authorizationStatus === AuthorizationStatus.Auth) {
+      dispatch(fetchIsFavoritesAction({ id, isFavorite: !isFavorite }));
+    } else {
+      navigate(AppRoute.Login);
+    }
   };
 
   const bookmarksButtonClassName = `place-card__bookmark-button button${isFavorite ? ' place-card__bookmark-button--active' : ''}`;
 
+  function handleLinkClick() {
+    dispatch(clearOfferDataAction());
+    dispatch(fetchOfferCardDataAction(id));
+  }
+
   return (
-    <Link to={`${AppRoute.Offer}${id}`}>
+    <Link to={`${AppRoute.Offer}${id}`} onClick={handleLinkClick}>
       <article
         onMouseEnter={onMouseEnter ? () => onMouseEnter(id) : undefined}
         onMouseLeave={onMouseLeave}

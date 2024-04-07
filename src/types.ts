@@ -48,7 +48,6 @@ export type OfferCard = {
   previewImage: string;
   city: City;
   location: OfferLocation;
-  isFavorite: boolean;
   isPremium: boolean;
   rating: number;
   description: string;

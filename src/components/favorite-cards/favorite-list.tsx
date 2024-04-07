@@ -1,7 +1,7 @@
 import { groupBy } from 'lodash';
 import { useAppSelector } from '../../hooks/app-dispatch';
-import { selectFavoriteOffers } from '../../store/city-offers-slice';
 import FavoriteListItem from './favorite-list-item';
+import { selectFavoriteOffers } from '../../store/auth-slice';
 
 function FavoriteList(): JSX.Element {
   const favorites = useAppSelector(selectFavoriteOffers);

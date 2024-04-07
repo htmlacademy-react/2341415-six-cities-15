@@ -1,13 +1,12 @@
 import { useState, FormEvent } from 'react';
-import { fetchReviewAction } from '../store/api-actions';
 import { useAppDispatch, useAppSelector } from '../hooks/app-dispatch';
-import { OfferCard } from '../types';
+import { fetchReviewAction, selectCurrentOfferCardId } from '../store/offer-card-slice';
 
 function OfferCommentsForm(): JSX.Element {
   const dispatch = useAppDispatch();
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState('');
-  const id = useAppSelector((state) => (state.other.selectedOfferCard as OfferCard).id);
+  const id = useAppSelector(selectCurrentOfferCardId);
 
   function handleRatingChange(evt: FormEvent<HTMLInputElement>) {
     evt.preventDefault();

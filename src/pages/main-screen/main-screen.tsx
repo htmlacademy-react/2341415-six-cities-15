@@ -1,18 +1,13 @@
-import CardsList from '../../components/cards/cards-list';
 import { CityName } from '../../types';
 import { CITIES } from '../../const';
 import Tabs from '../../components/tabs/tabs';
-import { useCallback, useState } from 'react';
-import CityMap from '../../components/map/map';
-import { cityLocation } from '../../mocks/city-locations';
-import { offerToPoint } from '../../utils';
 import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
-import Sort from '../../components/sort/sort';
 import LoadingScreen from '../loading-screen/loading-screen';
-import { cityChangeAction, fetchOffersAction, selectCity, selectIsOffersDataLoading, selectOffers, selectSorting } from '../../store/city-offers-slice';
+import { cityChangeAction, fetchOffersAction, selectCity, selectIsOffersDataLoading, selectOffers } from '../../store/city-offers-slice';
+import CardsWidget from '../../components/cards/cards-widget';
+import CardsWidgetEmpty from '../../components/cards/cards-widget-empty';
 
 function MainScreen(): JSX.Element {
-  const [selectedOfferId, setActiveOfferId] = useState<undefined | string>(undefined);
   const dispatch = useAppDispatch();
   const selectedCity = useAppSelector(selectCity);
   const cityOffers = useAppSelector(selectOffers);
@@ -23,10 +18,6 @@ function MainScreen(): JSX.Element {
     dispatch(action);
     dispatch(fetchOffersAction(cityName));
   };
-
-  const selectedSorting = useAppSelector(selectSorting);
-
-  const handleCardMouseLeave = useCallback(() => setActiveOfferId(undefined),[]);
 
   if(isOffersDataLoading) {
     return <LoadingScreen />;
@@ -43,24 +34,9 @@ function MainScreen(): JSX.Element {
         </section>
       </div>
       <div className="cities">
-        <div className="cities__places-container container">
-          <section className="cities__places places">
-            <h2 className="visually-hidden">Places</h2>
-            <b className="places__found">{cityOffers.length} places to stay in {selectedCity}</b>
-            <Sort selectedSorting={selectedSorting}/>
-            <div className="cities__places-list places__list tabs__content">
-              <CardsList offers={cityOffers} onCardMouseEnter={setActiveOfferId} onCardMouseLeave={handleCardMouseLeave} />
-            </div>
-          </section>
-          <div className="cities__right-section">
-            <CityMap
-              city={{ name: selectedCity, location: cityLocation[selectedCity] }}
-              points={cityOffers.map(offerToPoint)}
-              selectedPointId={selectedOfferId}
-              className='cities__map'
-            />
-          </div>
-        </div>
+        {cityOffers.length > 0
+          ? <CardsWidget cityOffers={cityOffers} selectedCity={selectedCity} />
+          : <CardsWidgetEmpty />}
       </div>
     </main>
   );

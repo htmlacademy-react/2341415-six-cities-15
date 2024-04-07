@@ -2,39 +2,34 @@ import { useParams } from 'react-router-dom';
 
 import { IS_LOADING, NOT_FOUND } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
-import { fetchCommentsAction, fetchOffersByIdAction, fetchOffersNearbyAction } from '../../store/api-actions';
 import NotFoundPage from '../error-screen/error-404-screen';
 import LoadingScreen from '../loading-screen/loading-screen';
 import OfferScreen from './offer-screen';
+import { fetchOfferCardDataAction, selectComments, selectNeighbours, selectSelectedOfferCard } from '../../store/offer-card-slice';
 
 function OfferScreenPreloader(): JSX.Element {
-  const dispatch = useAppDispatch();
   const { id } = useParams();
+  const dispatch = useAppDispatch();
 
-  const selectedOffer = useAppSelector((state) => state.other.selectedOfferCard);
-  const neighbours = useAppSelector((state) => state.other.neighbours);
-  const comments = useAppSelector((state) => state.other.comments);
-
-  function isOtherOfferLoaded(): boolean {
-    return typeof selectedOffer === 'object' && selectedOffer?.id !== id;
-  }
+  const selectedOffer = useAppSelector(selectSelectedOfferCard);
+  const neighbours = useAppSelector(selectNeighbours);
+  const comments = useAppSelector(selectComments);
 
   if (id === undefined) {
     return <NotFoundPage />;
   }
 
-  if (selectedOffer === null || isOtherOfferLoaded()) {
-    dispatch(fetchOffersByIdAction(id));
-    dispatch(fetchOffersNearbyAction(id));
-    dispatch(fetchCommentsAction(id));
-  }
-
-  if(selectedOffer === null || selectedOffer === IS_LOADING) {
+  if(selectedOffer === IS_LOADING) {
     return <LoadingScreen />;
   }
 
   if(selectedOffer === NOT_FOUND){
     return <NotFoundPage />;
+  }
+
+  if (selectedOffer === null) {
+    dispatch(fetchOfferCardDataAction(id));
+    return <LoadingScreen />;
   }
 
   return <OfferScreen selectedOffer={selectedOffer} neighbours={neighbours} comments={comments}/>;

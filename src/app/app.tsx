@@ -10,20 +10,18 @@ import ErrorMessage from '../components/error-message/error-message';
 import { useAppDispatch, useAppSelector } from '../hooks/app-dispatch';
 import LoadingScreen from '../pages/loading-screen/loading-screen';
 import { useEffect } from 'react';
-import { checkAuthAction } from '../store/api-actions';
 import OfferScreenPreloader from '../pages/offer-screen/offer-screen-preloader';
 import { fetchOffersAction, selectIsOffersDataLoading } from '../store/city-offers-slice';
-import { fetchFavoritesAction } from '../store/city-offers-slice';
+import { checkAuthAction, selectAuthorizationStatus } from '../store/auth-slice';
 
 function App(): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.other.authorizationStatus);
+  const authorizationStatus = useAppSelector(selectAuthorizationStatus);
   const isOffersDataLoading = useAppSelector(selectIsOffersDataLoading);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(fetchOffersAction(DEFAULT_CITY));
     dispatch(checkAuthAction());
-    dispatch(fetchFavoritesAction());
   },[dispatch]);
 
   if(isOffersDataLoading) {

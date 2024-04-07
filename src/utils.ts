@@ -37,7 +37,7 @@ export function formatCommentDate(date: Date): string {
   return format(date, 'MMMM yyyy');
 }
 
-export function offerToPoint(offer: Offer): Point {
+export function offerToPoint(offer: Pick<Offer, 'id' | 'location' | 'title'>): Point {
   const { id, location, title } = offer;
 
   return {
@@ -54,9 +54,10 @@ export function isNotFoundError(err: SerializedError): boolean {
 
 type Comparator = (offer1: Offer, offer2: Offer) => number;
 
-export const comparators: Record<SortVariants, Comparator> = {
+export const COMPARATORS: Record<SortVariants, Comparator> = {
   [SortVariants.Popular]: () => 0,
   [SortVariants.PriceHighToLow]: (offer1, offer2) => offer2.price - offer1.price,
   [SortVariants.PriceLowToHigh]: (offer1, offer2) => offer1.price - offer2.price,
   [SortVariants.TopRatedFirst]: (offer1, offer2) => offer2.rating - offer1.rating,
 };
+

@@ -1,14 +1,15 @@
-import { AuthorizationStatus } from '../../const';
+import { AppRoute, AuthorizationStatus, CITY_LOCATION } from '../../const';
 import { getRatingPercentage, offerToPoint } from '../../utils';
 import { MAX_RATING } from '../../const';
 import OfferCommentsForm from '../../forms/offer-comments-form';
 import CommentList from '../../components/comment/comment-list';
 import CityMap from '../../components/map/map';
-import { cityLocation } from '../../mocks/city-locations';
 import NearestCardsList from '../../components/cards/nearest-cards-list';
 import cn from 'classnames';
-import { useAppSelector } from '../../hooks/app-dispatch';
+import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
 import { Comment, Offer, OfferCard } from '../../types';
+import { fetchIsFavoritesAction, selectAuthorizationStatus, selectFavoriteOffers } from '../../store/auth-slice';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   selectedOffer: OfferCard;
@@ -17,9 +18,23 @@ type Props = {
 }
 
 function OfferScreen({ selectedOffer, comments, neighbours }: Props): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.other.authorizationStatus);
 
-  const bookmarksButtonClassName = `offer__bookmark-button button${selectedOffer.isFavorite ? ' offer__bookmark-button--active' : ''}`;
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const authorizationStatus = useAppSelector(selectAuthorizationStatus);
+  const favoriteOffers = useAppSelector(selectFavoriteOffers);
+  const isFavorite = favoriteOffers.some((offer) => offer.id === selectedOffer.id);
+  const bookmarksButtonClassName = `offer__bookmark-button button${isFavorite ? ' offer__bookmark-button--active' : ''}`;
+
+  const onFavoriteButtonClick: React.MouseEventHandler = (evt) => {
+    evt.preventDefault();
+
+    if (authorizationStatus === AuthorizationStatus.Auth) {
+      dispatch(fetchIsFavoritesAction({ id: selectedOffer.id, isFavorite: !isFavorite }));
+    } else {
+      navigate(AppRoute.Login);
+    }
+  };
 
   return (
     <main className="page__main page__main--offer">
@@ -40,7 +55,7 @@ function OfferScreen({ selectedOffer, comments, neighbours }: Props): JSX.Elemen
               <h1 className="offer__name">
                 {selectedOffer.title}
               </h1>
-              <button className={bookmarksButtonClassName} type="button">
+              <button className={bookmarksButtonClassName} onClick={onFavoriteButtonClick} type="button">
                 <svg className="offer__bookmark-icon" width="31" height="33">
                   <use xlinkHref="#icon-bookmark"></use>
                 </svg>
@@ -104,7 +119,7 @@ function OfferScreen({ selectedOffer, comments, neighbours }: Props): JSX.Elemen
           </div>
         </div>
         <CityMap
-          city={{ name: selectedOffer.city.name, location: cityLocation[selectedOffer.city.name] }}
+          city={{ name: selectedOffer.city.name, location: CITY_LOCATION[selectedOffer.city.name] }}
           points={[selectedOffer, ...neighbours].map(offerToPoint)}
           selectedPointId={selectedOffer.id}
           className='offer__map'
