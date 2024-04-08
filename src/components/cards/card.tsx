@@ -31,6 +31,7 @@ function Card ({ id, isPremium, price, rating, title, type, className, previewIm
 
   const onFavoriteButtonClick: React.MouseEventHandler = (evt) => {
     evt.preventDefault();
+    evt.stopPropagation();
 
     if (authorizationStatus === AuthorizationStatus.Auth) {
       dispatch(fetchIsFavoritesAction({ id, isFavorite: !isFavorite }));

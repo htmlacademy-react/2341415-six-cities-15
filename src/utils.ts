@@ -3,7 +3,9 @@ import { format } from 'date-fns';
 import { Offer } from './types';
 import { Point } from './components/map/types';
 import { SortVariants } from './const';
-import { SerializedError } from '@reduxjs/toolkit';
+import { Action, SerializedError, ThunkDispatch } from '@reduxjs/toolkit';
+import { setError } from './store/action';
+import { clearErrorAction } from './store/api-actions';
 
 export function getLayoutState(pathname: AppRoute, favoritesCount: number) {
   let rootClassName = '';
@@ -50,6 +52,11 @@ export function offerToPoint(offer: Pick<Offer, 'id' | 'location' | 'title'>): P
 
 export function isNotFoundError(err: SerializedError): boolean {
   return err.message?.includes('404') ?? false;
+}
+
+export function showErrorMessage(message: string, dispatch: ThunkDispatch<unknown, unknown, Action>) {
+  dispatch(setError(message));
+  dispatch(clearErrorAction());
 }
 
 type Comparator = (offer1: Offer, offer2: Offer) => number;

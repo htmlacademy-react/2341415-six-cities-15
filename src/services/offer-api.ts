@@ -1,11 +1,11 @@
 import { ApiRoute, DEFAULT_NEIGHBOURS_COUNT } from '../const';
-import { CityName, Offer, OfferCard } from '../types';
+import { Offer, OfferCard } from '../types';
 import api from './api';
 
 const offerApi = {
-  async getList(cityName: CityName): Promise<Offer[]> {
+  async getList(): Promise<Offer[]> {
     const { data } = await api.get<Offer[]>(ApiRoute.Offers);
-    return data.filter((offer) => offer.city.name === cityName);
+    return data;
   },
 
   async getBy(id: Offer['id']): Promise<OfferCard> {

@@ -1,8 +1,8 @@
 import { buildCreateSlice, asyncThunkCreator } from '@reduxjs/toolkit';
-import { IS_LOADING, NOT_FOUND } from '../const';
+import { ERROR, IS_LOADING, NOT_FOUND } from '../const';
 import { Comment, Offer, OfferCard, Review } from '../types';
 import { OfferApi } from '../services/offer-api';
-import { isNotFoundError } from '../utils';
+import { isNotFoundError, showErrorMessage } from '../utils';
 import { CommentsApi } from '../services/comments-api';
 
 const createSliceWithThunks = buildCreateSlice({
@@ -10,10 +10,11 @@ const createSliceWithThunks = buildCreateSlice({
 });
 
 type OfferState = {
-  error: string | null;
-  selectedOfferCard: OfferCard | null | typeof IS_LOADING | typeof NOT_FOUND;
+  selectedOfferCard: OfferCard | null | typeof IS_LOADING | typeof NOT_FOUND | typeof ERROR;
   neighbours: Offer[];
   comments: Comment[];
+  isCommentAddingInProgress: boolean;
+  isCommentWasAdded: boolean;
 }
 
 function isOfferCard(selectedOffer: OfferState['selectedOfferCard']): selectedOffer is OfferCard {
@@ -21,10 +22,11 @@ function isOfferCard(selectedOffer: OfferState['selectedOfferCard']): selectedOf
 }
 
 const initialState: OfferState = {
-  error: null,
   selectedOfferCard: null,
   neighbours: [],
   comments: [],
+  isCommentAddingInProgress: false,
+  isCommentWasAdded: false
 };
 
 const offerCardSlice = createSliceWithThunks({
@@ -34,6 +36,8 @@ const offerCardSlice = createSliceWithThunks({
     selectSelectedOfferCard: (state) => state.selectedOfferCard,
     selectNeighbours: (state) => state.neighbours,
     selectComments: (state) => state.comments,
+    selectCommentWasAdded: (state) => state.isCommentWasAdded,
+    selectIsCommentAddingInProgress: (state) => state.isCommentAddingInProgress,
     selectCurrentOfferCardId: (state) => {
       if (isOfferCard(state.selectedOfferCard)) {
         return state.selectedOfferCard.id;
@@ -48,13 +52,24 @@ const offerCardSlice = createSliceWithThunks({
       state.neighbours = [];
       state.comments = [];
     }),
-
+    resetCommentWasAddedAction: create.reducer((state) => {
+      state.isCommentWasAdded = false;
+    }),
     fetchOfferCardDataAction: create.asyncThunk<{ selectedOfferCard: OfferCard; neighbours: Offer[]; comments: Comment[] }, string, { extra: { offerApi: OfferApi; commentsApi: CommentsApi }}>(
-      async (id, { extra: { offerApi, commentsApi }}) => {
+      async (id, { extra: { offerApi, commentsApi }, dispatch }) => {
         const [selectedOfferCard, neighbours, comments] = await Promise.all([
-          offerApi.getBy(id),
-          offerApi.getNearby(id),
-          commentsApi.getList(id),
+          offerApi.getBy(id).catch((err) => {
+            showErrorMessage('offer card loading error', dispatch);
+            throw err;
+          }),
+          offerApi.getNearby(id).catch(() => {
+            showErrorMessage('nearest offers loading error', dispatch);
+            return [];
+          }),
+          commentsApi.getList(id).catch(() => {
+            showErrorMessage('comments loading error', dispatch);
+            return [];
+          }),
         ]);
 
         return { selectedOfferCard, neighbours, comments };
@@ -67,6 +82,7 @@ const offerCardSlice = createSliceWithThunks({
           if (isNotFoundError(action.error)) {
             state.selectedOfferCard = NOT_FOUND;
           }
+          state.selectedOfferCard = ERROR;
         },
         fulfilled: (state, action) => {
           const { selectedOfferCard, neighbours, comments } = action.payload;
@@ -76,17 +92,28 @@ const offerCardSlice = createSliceWithThunks({
         },
       }
     ),
-    fetchReviewAction: create.asyncThunk<Comment, Review, { extra: { commentsApi: CommentsApi }}>(
-      (review, { extra: { commentsApi } }) => commentsApi.sendReview(review),
+    addCommentAction: create.asyncThunk<Comment, Review, { extra: { commentsApi: CommentsApi }}>(
+      (review, { extra: { commentsApi }, dispatch }) => commentsApi.sendReview(review).catch((err) => {
+        showErrorMessage('comment adding error', dispatch);
+        throw err;
+      }),
       {
         fulfilled: (state, action) => {
+          state.isCommentAddingInProgress = false;
           state.comments = [...state.comments, action.payload];
+          state.isCommentWasAdded = true;
         },
+        pending: (state) => {
+          state.isCommentAddingInProgress = true;
+        },
+        rejected: (state) => {
+          state.isCommentAddingInProgress = false;
+        }
       }
     ),
   }),
 });
 
 export default offerCardSlice;
-export const { fetchOfferCardDataAction, clearOfferDataAction, fetchReviewAction } = offerCardSlice.actions;
-export const { selectSelectedOfferCard, selectNeighbours, selectComments, selectCurrentOfferCardId } = offerCardSlice.selectors;
+export const { fetchOfferCardDataAction, clearOfferDataAction, addCommentAction, resetCommentWasAddedAction } = offerCardSlice.actions;
+export const { selectSelectedOfferCard, selectNeighbours, selectComments, selectCurrentOfferCardId, selectIsCommentAddingInProgress, selectCommentWasAdded } = offerCardSlice.selectors;

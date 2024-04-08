@@ -1,6 +1,11 @@
 import { FormEvent, useRef } from 'react';
 import { useAppDispatch } from '../../hooks/app-dispatch';
 import { loginAction } from '../../store/auth-slice';
+import { processErrorHandle } from '../../services/process-error-handle';
+
+function isPasswordValid(password: string) {
+  return /[A-Z]+/.test(password) && /\d+/.test(password);
+}
 
 function LoginScreen(): JSX.Element {
   const emailRef = useRef('');
@@ -9,7 +14,12 @@ function LoginScreen(): JSX.Element {
 
   function handleSubmit(evt: FormEvent) {
     evt.preventDefault();
-    dispatch(loginAction({ login: emailRef.current, password: passwordRef.current }));
+
+    if (isPasswordValid(passwordRef.current)) {
+      dispatch(loginAction({ login: emailRef.current, password: passwordRef.current }));
+    } else {
+      processErrorHandle('Password must includes at least one digit and one capital letter');
+    }
   }
 
   return (

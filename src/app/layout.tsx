@@ -2,7 +2,7 @@ import { Outlet, useLocation, Link } from 'react-router-dom';
 import { AppRoute, AuthorizationStatus, DEFAULT_CITY } from '../const';
 import { getLayoutState } from '../utils';
 import { useAppDispatch, useAppSelector } from '../hooks/app-dispatch';
-import { cityChangeAction, fetchOffersAction } from '../store/city-offers-slice';
+import { cityChangeAction } from '../store/city-offers-slice';
 import { logoutAction, selectAuthorizationStatus, selectFavoriteOffers, selectUser } from '../store/auth-slice';
 
 function Layout(): JSX.Element {
@@ -15,7 +15,6 @@ function Layout(): JSX.Element {
 
   function handleLogoClick() {
     dispatch(cityChangeAction(DEFAULT_CITY));
-    dispatch(fetchOffersAction(DEFAULT_CITY));
   }
   function handleLogoutClick() {
     dispatch(logoutAction());

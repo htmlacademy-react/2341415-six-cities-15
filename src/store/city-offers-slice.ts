@@ -2,7 +2,8 @@ import { buildCreateSlice, asyncThunkCreator } from '@reduxjs/toolkit';
 import { DEFAULT_CITY, DEFAULT_SORTING_ORDER, SortVariants } from '../const';
 import { CityName, Offer } from '../types';
 import { OfferApi } from '../services/offer-api';
-import { COMPARATORS } from '../utils';
+import { COMPARATORS, showErrorMessage } from '../utils';
+import { createSelector } from 'reselect';
 
 const createSliceWithThunks = buildCreateSlice({
   creators: { asyncThunk: asyncThunkCreator },
@@ -27,7 +28,14 @@ const cityOffersSlice = createSliceWithThunks({
   initialState,
   selectors: {
     selectIsOffersDataLoading: (state) => state.isOffersDataLoading,
-    selectOffers: (state) => state.offers,
+    selectOffers: createSelector(
+      [
+        (state: OfferState) => state.offers,
+        (state: OfferState) => state.city,
+        (state: OfferState) => state.selectedSorting,
+      ],
+      (offers, city, selectedSorting) => offers.filter((offer) => offer.city.name === city).sort(COMPARATORS[selectedSorting])
+    ),
     selectCity: (state) => state.city,
     selectSorting: (state) => state.selectedSorting,
   },
@@ -38,10 +46,12 @@ const cityOffersSlice = createSliceWithThunks({
     sortingOrderChangeAction: create.reducer<SortVariants>((state, action) => {
       const newSelectedSorting = action.payload;
       state.selectedSorting = newSelectedSorting;
-      state.offers = newSelectedSorting === DEFAULT_SORTING_ORDER ? initialState.offers : state.offers.sort(COMPARATORS[newSelectedSorting]);
     }),
-    fetchOffersAction: create.asyncThunk<Offer[], CityName, { extra: { offerApi: OfferApi }}>(
-      async (cityName, { extra: { offerApi }}) => offerApi.getList(cityName),
+    fetchOffersAction: create.asyncThunk<Offer[], undefined, { extra: { offerApi: OfferApi }}>(
+      async (_arg, { extra: { offerApi }, dispatch}) => offerApi.getList().catch((err) => {
+        showErrorMessage('offers loading error', dispatch);
+        throw err;
+      }),
       {
         pending: (state) => {
           state.isOffersDataLoading = true;

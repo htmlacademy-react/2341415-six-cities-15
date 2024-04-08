@@ -1,13 +1,13 @@
 import { useParams } from 'react-router-dom';
 
-import { IS_LOADING, NOT_FOUND } from '../../const';
+import { ERROR, IS_LOADING, NOT_FOUND } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
 import NotFoundPage from '../error-screen/error-404-screen';
 import LoadingScreen from '../loading-screen/loading-screen';
 import OfferScreen from './offer-screen';
 import { fetchOfferCardDataAction, selectComments, selectNeighbours, selectSelectedOfferCard } from '../../store/offer-card-slice';
 
-function OfferScreenPreloader(): JSX.Element {
+function OfferScreenPreloader(): JSX.Element | null{
   const { id } = useParams();
   const dispatch = useAppDispatch();
 
@@ -30,6 +30,9 @@ function OfferScreenPreloader(): JSX.Element {
   if (selectedOffer === null) {
     dispatch(fetchOfferCardDataAction(id));
     return <LoadingScreen />;
+  }
+  if (selectedOffer === ERROR) {
+    return null;
   }
 
   return <OfferScreen selectedOffer={selectedOffer} neighbours={neighbours} comments={comments}/>;

@@ -54,6 +54,7 @@ export const DEFAULT_COMMENTS_COUNT = 10;
 
 export const IS_LOADING = 'SOURCE_IS_LOADING';
 export const NOT_FOUND = 'SOURCE_NOT_FOUND';
+export const ERROR = 'ERROR';
 
 type Location = {
   latitude: number;

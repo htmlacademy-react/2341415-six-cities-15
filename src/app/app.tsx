@@ -4,7 +4,7 @@ import NotFoundPage from '../pages/error-screen/error-404-screen';
 import FavoritesScreen from '../pages/favorites-screen/favorites-screen';
 import LoginScreen from '../pages/login-screen/login-screen';
 import PrivateRoute from '../components/private-route/private-route';
-import { AppRoute, DEFAULT_CITY } from '../const';
+import { AppRoute } from '../const';
 import Layout from './layout';
 import ErrorMessage from '../components/error-message/error-message';
 import { useAppDispatch, useAppSelector } from '../hooks/app-dispatch';
@@ -20,7 +20,7 @@ function App(): JSX.Element {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchOffersAction(DEFAULT_CITY));
+    dispatch(fetchOffersAction());
     dispatch(checkAuthAction());
   },[dispatch]);
 
