@@ -2,7 +2,7 @@ import { OfferType } from '../../types';
 import { getRatingPercentage } from '../../utils';
 import { AppRoute, AuthorizationStatus, MAX_RATING } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
-import { fetchIsFavoritesAction, selectAuthorizationStatus, selectFavoriteOffers } from '../../store/auth-slice';
+import { fetchIsFavoritesAction, selectAddingToFavoritesOfferIds, selectAuthorizationStatus, selectFavoriteOffers } from '../../store/auth-slice';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
@@ -24,6 +24,7 @@ function FavoriteCard({ id, price, rating, previewImage, type, title, isPremium 
   const authorizationStatus = useAppSelector(selectAuthorizationStatus);
   const favoriteOffers = useAppSelector(selectFavoriteOffers);
   const isFavorite = favoriteOffers.some((offer) => offer.id === id);
+  const favoriteAddingOfferIds = useAppSelector(selectAddingToFavoritesOfferIds);
 
   const onFavoriteButtonClick: React.MouseEventHandler = (evt) => {
     evt.preventDefault();
@@ -51,7 +52,7 @@ function FavoriteCard({ id, price, rating, previewImage, type, title, isPremium 
             <b className="place-card__price-value">&euro;{price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
-          <button className={bookmarksButtonClassName} onClick={onFavoriteButtonClick} type="button">
+          <button className={bookmarksButtonClassName} onClick={onFavoriteButtonClick} type="button" disabled={favoriteAddingOfferIds.includes(id)}>
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark"></use>
             </svg>

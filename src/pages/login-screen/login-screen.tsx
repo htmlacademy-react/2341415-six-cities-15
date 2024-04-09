@@ -1,24 +1,33 @@
-import { FormEvent, useRef } from 'react';
-import { useAppDispatch } from '../../hooks/app-dispatch';
-import { loginAction } from '../../store/auth-slice';
+import { FormEvent, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
+import { loginAction, selectUser } from '../../store/auth-slice';
 import { processErrorHandle } from '../../services/process-error-handle';
+import { useNavigate } from 'react-router-dom';
+import { AppRoute } from '../../const';
 
 function isPasswordValid(password: string) {
-  return /[A-Z]+/.test(password) && /\d+/.test(password);
+  return /[A-z]+/.test(password) && /\d+/.test(password);
 }
 
 function LoginScreen(): JSX.Element {
-  const emailRef = useRef('');
-  const passwordRef = useRef('');
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
+  const user = useAppSelector(selectUser);
+  const isAuthorizationSuccessful = !!user;
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  if (isAuthorizationSuccessful) {
+    navigate(AppRoute.Main);
+  }
 
   function handleSubmit(evt: FormEvent) {
     evt.preventDefault();
 
-    if (isPasswordValid(passwordRef.current)) {
-      dispatch(loginAction({ login: emailRef.current, password: passwordRef.current }));
+    if (isPasswordValid(password)) {
+      dispatch(loginAction({ login, password }));
     } else {
-      processErrorHandle('Password must includes at least one digit and one capital letter');
+      processErrorHandle('Password must includes at least one digit and one letter');
     }
   }
 
@@ -31,9 +40,7 @@ function LoginScreen(): JSX.Element {
             <div className="login__input-wrapper form__input-wrapper">
               <label className="visually-hidden">E-mail</label>
               <input
-                onChange={(evt) => {
-                  emailRef.current = evt.currentTarget.value;
-                }}
+                onChange={(evt) => setLogin(evt.currentTarget.value)}
                 className="login__input form__input"
                 type="email"
                 name="email"
@@ -44,9 +51,7 @@ function LoginScreen(): JSX.Element {
             <div className="login__input-wrapper form__input-wrapper">
               <label className="visually-hidden">Password</label>
               <input
-                onChange={(evt) => {
-                  passwordRef.current = evt.currentTarget.value;
-                }}
+                onChange={(evt) => setPassword(evt.currentTarget.value)}
                 className="login__input form__input"
                 type="password"
                 name="password"

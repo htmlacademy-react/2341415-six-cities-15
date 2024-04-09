@@ -52,6 +52,8 @@ export const TIMEOUT_SHOW_ERROR = 2000;
 export const DEFAULT_NEIGHBOURS_COUNT = 3;
 export const DEFAULT_COMMENTS_COUNT = 10;
 
+export const DISPLAYED_OFFER_IMAGE_COUNT = 6;
+
 export const IS_LOADING = 'SOURCE_IS_LOADING';
 export const NOT_FOUND = 'SOURCE_NOT_FOUND';
 export const ERROR = 'ERROR';

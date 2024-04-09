@@ -1,6 +1,12 @@
 import { useState, FormEvent, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks/app-dispatch';
-import { addCommentAction, resetCommentWasAddedAction, selectCommentWasAdded, selectCurrentOfferCardId, selectIsCommentAddingInProgress } from '../store/offer-card-slice';
+import {
+  addCommentAction,
+  resetCommentWasAddedAction,
+  selectCommentWasAdded,
+  selectCurrentOfferCardId,
+  selectIsCommentAddingInProgress
+} from '../store/offer-card-slice';
 
 function OfferCommentsForm(): JSX.Element {
   const dispatch = useAppDispatch();

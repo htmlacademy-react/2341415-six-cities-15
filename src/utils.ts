@@ -32,7 +32,7 @@ export function getLayoutState(pathname: AppRoute, favoritesCount: number) {
 }
 
 export function getRatingPercentage(rating: number, maxRating: number) {
-  return Math.round(rating / maxRating * 100);
+  return Math.round(Math.round(rating) / maxRating * 100);
 }
 
 export function formatCommentDate(date: Date): string {

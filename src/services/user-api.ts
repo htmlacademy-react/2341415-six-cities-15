@@ -15,6 +15,7 @@ export const userApi = {
   },
   async getAuthorizedUser(): Promise<UserData> {
     const { data } = await api.get<UserData>(ApiRoute.Login);
+    saveToken(data.token);
     return data;
   }
 } as const;

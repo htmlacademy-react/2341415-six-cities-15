@@ -23,7 +23,7 @@ function CardsWidget({ cityOffers, selectedCity }: Props): JSX.Element {
     <div className="cities__places-container container">
       <section className="cities__places places">
         <h2 className="visually-hidden">Places</h2>
-        <b className="places__found">{cityOffers.length} places to stay in {selectedCity}</b>
+        <b className="places__found">{cityOffers.length} place{cityOffers.length > 1 ? 's' : ''} to stay in {selectedCity}</b>
         <Sort selectedSorting={selectedSorting}/>
         <div className="cities__places-list places__list tabs__content">
           <CardsList offers={cityOffers} onCardMouseEnter={setActiveOfferId} onCardMouseLeave={handleCardMouseLeave} />
