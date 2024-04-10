@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
 import { Comment, Offer, OfferCard } from '../../types';
 import { fetchIsFavoritesAction, selectAddingToFavoritesOfferIds, selectAuthorizationStatus, selectFavoriteOffers } from '../../store/auth-slice';
 import { useNavigate } from 'react-router-dom';
+import { selectCommentsCount } from '../../store/offer-card-slice';
 
 type Props = {
   selectedOffer: OfferCard;
@@ -25,6 +26,7 @@ function OfferScreen({ selectedOffer, comments, neighbours }: Props): JSX.Elemen
   const isFavorite = favoriteOffers.some((offer) => offer.id === selectedOffer.id);
   const bookmarksButtonClassName = `offer__bookmark-button button${isFavorite ? ' offer__bookmark-button--active' : ''}`;
   const favoriteAddingOfferIds = useAppSelector(selectAddingToFavoritesOfferIds);
+  const commentsCount = useAppSelector(selectCommentsCount);
 
   const onFavoriteButtonClick: React.MouseEventHandler = (evt) => {
     evt.preventDefault();
@@ -110,7 +112,7 @@ function OfferScreen({ selectedOffer, comments, neighbours }: Props): JSX.Elemen
               </div>
             </div>
             <section className="offer__reviews reviews">
-              <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{comments.length}</span></h2>
+              <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{commentsCount}</span></h2>
               <CommentList comments={comments}/>
               {authorizationStatus === AuthorizationStatus.Auth ? <OfferCommentsForm /> : null}
             </section>

@@ -36,6 +36,7 @@ const offerCardSlice = createSliceWithThunks({
   selectors: {
     selectSelectedOfferCard: (state) => state.selectedOfferCard,
     selectNeighbours: (state) => state.neighbours,
+    selectCommentsCount: (state) => state.comments.length,
     selectComments: createSelector(
       [
         (state: OfferState) => state.comments,
@@ -122,4 +123,4 @@ const offerCardSlice = createSliceWithThunks({
 
 export default offerCardSlice;
 export const { fetchOfferCardDataAction, clearOfferDataAction, addCommentAction, resetCommentWasAddedAction } = offerCardSlice.actions;
-export const { selectSelectedOfferCard, selectNeighbours, selectComments, selectCurrentOfferCardId, selectIsCommentAddingInProgress, selectCommentWasAdded } = offerCardSlice.selectors;
+export const { selectSelectedOfferCard, selectNeighbours, selectComments, selectCurrentOfferCardId, selectIsCommentAddingInProgress, selectCommentWasAdded, selectCommentsCount } = offerCardSlice.selectors;

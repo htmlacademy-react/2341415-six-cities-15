@@ -44,7 +44,7 @@ function OfferCommentsForm(): JSX.Element {
   }
 
   function isFormInputsValueValid() {
-    return review.length > 50 && rating;
+    return review.length > 50 && review.length < 300 && rating;
   }
 
   return (
@@ -80,8 +80,8 @@ function OfferCommentsForm(): JSX.Element {
             </svg>
           </label>
 
-          <input onChange={handleRatingChange} className="form__rating-input visually-hidden" name="rating" value="1" id="1-star" type="radio" checked={rating === 1} />
-          <label htmlFor="1-star" className="reviews__rating-label form__rating-label" title="terribly">
+          <input onChange={handleRatingChange} className="form__rating-input visually-hidden" name="rating" value="1" id="1-stars" type="radio" checked={rating === 1} />
+          <label htmlFor="1-stars" className="reviews__rating-label form__rating-label" title="terribly">
             <svg className="form__star-image" width="37" height="33">
               <use xlinkHref="#icon-star"></use>
             </svg>
