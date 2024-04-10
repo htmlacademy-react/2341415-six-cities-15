@@ -14,7 +14,7 @@ export function getLayoutState(pathname: AppRoute, favoritesCount: number) {
   let shouldRenderFooter = false;
 
 
-  if(pathname === AppRoute.Main) {
+  if (pathname === AppRoute.Main) {
     rootClassName = ' page--gray page--main';
     linkClassName = ' header__logo-link--active';
   } else if(pathname === AppRoute.Login) {

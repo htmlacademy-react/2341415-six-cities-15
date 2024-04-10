@@ -11,16 +11,51 @@ import { useAppSelector } from '../hooks/app-dispatch';
 import LoadingScreen from '../pages/loading-screen/loading-screen';
 import OfferScreenPreloader from '../pages/offer-screen/offer-screen-preloader';
 import { selectIsOffersDataLoading } from '../store/city-offers-slice';
-import { selectAuthorizationStatus } from '../store/auth-slice';
+import { selectAuthorizationStatus, selectIsFavoritesLoading } from '../store/auth-slice';
+
+function getOnLoadingRoutes() {
+  return (
+    <>
+      {Object.values(AppRoute).filter((route) => !route.startsWith(':')).map((route) => <Route key={route} path={route} element={<LoadingScreen/>}></Route>)}
+      <Route path='*' element={<NotFoundPage />} />
+    </>
+  );
+}
 
 function App(): JSX.Element {
   const authorizationStatus = useAppSelector(selectAuthorizationStatus);
   const isOffersDataLoading = useAppSelector(selectIsOffersDataLoading);
-  const isLoading = authorizationStatus === AuthorizationStatus.Unknown || isOffersDataLoading;
+  const isFavoritesLoading = useAppSelector(selectIsFavoritesLoading);
+  const isLoading = authorizationStatus === AuthorizationStatus.Unknown || isOffersDataLoading || isFavoritesLoading;
 
-  if(isOffersDataLoading) {
+  function getInitializedAppRoutes() {
     return (
-      <LoadingScreen/>
+      <Route path={AppRoute.Main} element={<Layout />}>
+        <Route index element={<MainScreen />} />
+        <Route path={AppRoute.Favorites} element={
+          <PrivateRoute
+            predicate={authorizationStatus === AuthorizationStatus.Auth}
+            falsePredicateRoute={AppRoute.Login}
+          >
+            <FavoritesScreen />
+          </PrivateRoute>
+        }
+        />
+        <Route path={AppRoute.Login} element={
+          <PrivateRoute
+            predicate={authorizationStatus === AuthorizationStatus.NoAuth}
+            falsePredicateRoute={AppRoute.Main}
+          >
+            <LoginScreen />
+          </PrivateRoute>
+        }
+        />
+        <Route path={AppRoute.Offer} >
+          <Route index element={<NotFoundPage />} />
+          <Route path={AppRoute.OfferId} element={<OfferScreenPreloader />} />
+        </Route>
+        <Route path='*' element={<NotFoundPage />} />
+      </Route>
     );
   }
 
@@ -29,35 +64,7 @@ function App(): JSX.Element {
       <ErrorMessage />
       <BrowserRouter>
         <Routes>
-          {
-            isLoading ? <Route path='*' element={<LoadingScreen />} /> :
-              <Route path={AppRoute.Main} element={<Layout />}>
-                <Route index element={<MainScreen />} />
-                <Route path={AppRoute.Favorites} element={
-                  <PrivateRoute
-                    predicate={authorizationStatus === AuthorizationStatus.Auth}
-                    falsePredicateRoute={AppRoute.Login}
-                  >
-                    <FavoritesScreen />
-                  </PrivateRoute>
-                }
-                />
-                <Route path={AppRoute.Login} element={
-                  <PrivateRoute
-                    predicate={authorizationStatus === AuthorizationStatus.NoAuth}
-                    falsePredicateRoute={AppRoute.Main}
-                  >
-                    <LoginScreen />
-                  </PrivateRoute>
-                }
-                />
-                <Route path={AppRoute.Offer} >
-                  <Route index element={<NotFoundPage />} />
-                  <Route path={AppRoute.OfferId} element={<OfferScreenPreloader />} />
-                </Route>
-                <Route path='*' element={<NotFoundPage />} />
-              </Route>
-          }
+          {isLoading ? getOnLoadingRoutes() : getInitializedAppRoutes()}
         </Routes>
       </BrowserRouter>
     </>

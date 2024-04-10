@@ -16,9 +16,6 @@ function Layout(): JSX.Element {
   function handleLogoClick() {
     dispatch(cityChangeAction(DEFAULT_CITY));
   }
-  function handleLogoutClick() {
-    dispatch(logoutAction());
-  }
 
   return (
     <div className={`page${rootClassName}`}>
@@ -59,7 +56,10 @@ function Layout(): JSX.Element {
                     {authorizationStatus === AuthorizationStatus.Auth ? (
                       <li className="header__nav-item">
                         <a
-                          onClick={handleLogoutClick}
+                          onClick={(evt) => {
+                            evt.preventDefault();
+                            dispatch(logoutAction());
+                          }}
                           className="header__nav-link" href="#"
                         >
                           <span className="header__signout">Sign out</span>
@@ -88,3 +88,4 @@ function Layout(): JSX.Element {
 }
 
 export default Layout;
+

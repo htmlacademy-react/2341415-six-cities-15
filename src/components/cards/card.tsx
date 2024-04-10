@@ -1,11 +1,12 @@
 import { OfferType } from '../../types';
 import { AppRoute, AuthorizationStatus, MAX_RATING } from '../../const';
 import { getRatingPercentage } from '../../utils';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { memo } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
 import { fetchIsFavoritesAction, selectAuthorizationStatus, selectFavoriteOffers, selectAddingToFavoritesOfferIds } from '../../store/auth-slice';
 import { clearOfferDataAction, fetchOfferCardDataAction } from '../../store/offer-card-slice';
+import cn from 'classnames';
 
 export type Props = {
   id: string;
@@ -30,6 +31,7 @@ function Card ({ id, isPremium, price, rating, title, type, className, previewIm
   const favoriteAddingOfferIds = useAppSelector(selectAddingToFavoritesOfferIds);
   const isFavorite = favoriteOffers.some((offer) => offer.id === id);
 
+
   const onFavoriteButtonClick: React.MouseEventHandler = (evt) => {
     evt.preventDefault();
     evt.stopPropagation();
@@ -41,51 +43,51 @@ function Card ({ id, isPremium, price, rating, title, type, className, previewIm
     }
   };
 
-  const bookmarksButtonClassName = `place-card__bookmark-button button${isFavorite ? ' place-card__bookmark-button--active' : ''}`;
+  const bookmarksButtonClassName = cn('button', 'place-card__bookmark-button', { 'place-card__bookmark-button--active': isFavorite });
 
   function handleLinkClick() {
     dispatch(clearOfferDataAction());
     dispatch(fetchOfferCardDataAction(id));
+    navigate(`${AppRoute.Offer}${id}`);
   }
 
   return (
-    <Link to={`${AppRoute.Offer}${id}`} onClick={handleLinkClick}>
-      <article
-        onMouseEnter={onMouseEnter ? () => onMouseEnter(id) : undefined}
-        onMouseLeave={onMouseLeave}
-        key={id}
-        className={`${className} place-card`}
-      >
-        {isPremium ? <div className="place-card__mark"><span>Premium</span></div> : null}
-        <div className={imgWrapperClassName}>
-          <img className="place-card__image" src={previewImage} width="260" height="200" alt="Place image" />
-        </div>
-        <div className="place-card__info">
-          <div className="place-card__price-wrapper">
-            <div className="place-card__price">
-              <b className="place-card__price-value">&euro;{price}</b>
-              <span className="place-card__price-text">&#47;&nbsp;night</span>
-            </div>
-            <button className={bookmarksButtonClassName} onClick={onFavoriteButtonClick} type="button" disabled={favoriteAddingOfferIds.includes(id)}>
-              <svg className="place-card__bookmark-icon" width="18" height="19">
-                <use xlinkHref="#icon-bookmark"></use>
-              </svg>
-              <span className="visually-hidden">To bookmarks</span>
-            </button>
+    <article
+      onClick={handleLinkClick}
+      onMouseEnter={onMouseEnter ? () => onMouseEnter(id) : undefined}
+      onMouseLeave={onMouseLeave}
+      key={id}
+      className={`${className} place-card`}
+    >
+      {isPremium ? <div className="place-card__mark"><span>Premium</span></div> : null}
+      <div className={imgWrapperClassName}>
+        <img className="place-card__image" src={previewImage} width="260" height="200" alt="Place image" />
+      </div>
+      <div className="place-card__info">
+        <div className="place-card__price-wrapper">
+          <div className="place-card__price">
+            <b className="place-card__price-value">&euro;{price}</b>
+            <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
-          <div className="place-card__rating rating">
-            <div className="place-card__stars rating__stars">
-              <span style= {{width: `${getRatingPercentage(rating, MAX_RATING)}%`}}></span>
-              <span className="visually-hidden">{rating}</span>
-            </div>
-          </div>
-          <h2 className="place-card__name">
-            {title}
-          </h2>
-          <p className="place-card__type">{type}</p>
+          <button className={bookmarksButtonClassName} onClick={onFavoriteButtonClick} type="button" disabled={favoriteAddingOfferIds.includes(id)}>
+            <svg className="place-card__bookmark-icon" width="18" height="19">
+              <use xlinkHref="#icon-bookmark"></use>
+            </svg>
+            <span className="visually-hidden">To bookmarks</span>
+          </button>
         </div>
-      </article>
-    </Link>
+        <div className="place-card__rating rating">
+          <div className="place-card__stars rating__stars">
+            <span style= {{width: `${getRatingPercentage(rating, MAX_RATING)}%`}}></span>
+            <span className="visually-hidden">{rating}</span>
+          </div>
+        </div>
+        <h2 className="place-card__name">
+          {title}
+        </h2>
+        <p className="place-card__type">{type}</p>
+      </div>
+    </article>
   );
 }
 

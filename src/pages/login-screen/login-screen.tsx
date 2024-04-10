@@ -1,9 +1,11 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
 import { loginAction, selectUser } from '../../store/auth-slice';
 import { processErrorHandle } from '../../services/process-error-handle';
 import { useNavigate } from 'react-router-dom';
-import { AppRoute } from '../../const';
+import { AppRoute, CITIES } from '../../const';
+import { sample } from 'lodash';
+import { cityChangeAction } from '../../store/city-offers-slice';
 
 function isPasswordValid(password: string) {
   return /[A-z]+/.test(password) && /\d+/.test(password);
@@ -29,6 +31,13 @@ function LoginScreen(): JSX.Element {
     } else {
       processErrorHandle('Password must includes at least one digit and one letter');
     }
+  }
+
+  const randomCity = useMemo(() => sample(CITIES)!, []);
+
+  function handleOnCityClick() {
+    dispatch(cityChangeAction(randomCity));
+    navigate(AppRoute.Main);
   }
 
   return (
@@ -65,7 +74,7 @@ function LoginScreen(): JSX.Element {
         <section className="locations locations--login locations--current">
           <div className="locations__item">
             <a className="locations__item-link" href="#">
-              <span>Amsterdam</span>
+              <span onClick={handleOnCityClick}>{randomCity}</span>
             </a>
           </div>
         </section>

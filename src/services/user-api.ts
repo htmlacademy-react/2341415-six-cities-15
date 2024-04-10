@@ -10,13 +10,21 @@ export const userApi = {
     return data;
   },
   async logout() {
-    await api.delete<UserData>(ApiRoute.Logout);
-    dropToken();
+    try {
+      await api.delete<UserData>(ApiRoute.Logout);
+    } finally {
+      dropToken();
+    }
   },
   async getAuthorizedUser(): Promise<UserData> {
-    const { data } = await api.get<UserData>(ApiRoute.Login);
-    saveToken(data.token);
-    return data;
+    try {
+      const { data } = await api.get<UserData>(ApiRoute.Login);
+      saveToken(data.token);
+      return data;
+    } catch (err) {
+      dropToken();
+      throw err;
+    }
   }
 } as const;
 
