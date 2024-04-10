@@ -1,9 +1,10 @@
 import { buildCreateSlice, asyncThunkCreator } from '@reduxjs/toolkit';
-import { ERROR, IS_LOADING, NOT_FOUND } from '../const';
+import { DEFAULT_COMMENTS_COUNT, ERROR, IS_LOADING, NOT_FOUND } from '../const';
 import { Comment, Offer, OfferCard, Review } from '../types';
 import { OfferApi } from '../services/offer-api';
 import { isNotFoundError, showErrorMessage } from '../utils';
 import { CommentsApi } from '../services/comments-api';
+import { createSelector } from 'reselect';
 
 const createSliceWithThunks = buildCreateSlice({
   creators: { asyncThunk: asyncThunkCreator },
@@ -35,7 +36,12 @@ const offerCardSlice = createSliceWithThunks({
   selectors: {
     selectSelectedOfferCard: (state) => state.selectedOfferCard,
     selectNeighbours: (state) => state.neighbours,
-    selectComments: (state) => state.comments,
+    selectComments: createSelector(
+      [
+        (state: OfferState) => state.comments,
+      ],
+      (comments) => comments.slice(0, DEFAULT_COMMENTS_COUNT)
+    ),
     selectCommentWasAdded: (state) => state.isCommentWasAdded,
     selectIsCommentAddingInProgress: (state) => state.isCommentAddingInProgress,
     selectCurrentOfferCardId: (state) => {
@@ -100,7 +106,7 @@ const offerCardSlice = createSliceWithThunks({
       {
         fulfilled: (state, action) => {
           state.isCommentAddingInProgress = false;
-          state.comments = [...state.comments, action.payload];
+          state.comments = [action.payload, ...state.comments];
           state.isCommentWasAdded = true;
         },
         pending: (state) => {

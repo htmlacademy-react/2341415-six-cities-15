@@ -23,7 +23,10 @@ function MainScreen(): JSX.Element {
   }
 
   return (
-    <main className="page__main page__main--index">
+    <main className={cityOffers.length > 0
+      ? 'page__main page__main--index'
+      : 'page__main page__main--index page__main--index-empty'}
+    >
       <h1 className="visually-hidden">Cities</h1>
       <div className="tabs">
         <section className="locations container">
@@ -35,7 +38,7 @@ function MainScreen(): JSX.Element {
       <div className="cities">
         {cityOffers.length > 0
           ? <CardsWidget cityOffers={cityOffers} selectedCity={selectedCity} />
-          : <CardsWidgetEmpty />}
+          : <CardsWidgetEmpty selectedCity={selectedCity} />}
       </div>
     </main>
   );

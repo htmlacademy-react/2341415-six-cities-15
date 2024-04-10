@@ -1,7 +1,7 @@
 import { OfferType } from '../../types';
 import { AppRoute, AuthorizationStatus, MAX_RATING } from '../../const';
 import { getRatingPercentage } from '../../utils';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { memo } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
 import { fetchIsFavoritesAction, selectAuthorizationStatus, selectFavoriteOffers, selectAddingToFavoritesOfferIds } from '../../store/auth-slice';
@@ -83,7 +83,7 @@ function Card ({ id, isPremium, price, rating, title, type, className, previewIm
           </div>
         </div>
         <h2 className="place-card__name">
-          {title}
+          <Link to=''>{title}</Link>
         </h2>
         <p className="place-card__type">{type}</p>
       </div>
