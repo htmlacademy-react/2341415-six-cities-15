@@ -16,11 +16,14 @@ function OfferScreenPreloader(): JSX.Element | null{
   const neighbours = useAppSelector(selectNeighbours);
   const comments = useAppSelector(selectComments);
 
-  useEffect(() => {
-    if (id && selectedOffer === null) {
-      dispatch(fetchOfferCardDataAction(id));
-    }
-  }, [selectedOffer, id, dispatch]);
+  useEffect(
+    () => {
+      if (id && selectedOffer === null) {
+        dispatch(fetchOfferCardDataAction(id));
+      }
+    },
+    [selectedOffer, id, dispatch]
+  );
 
   if (id === undefined) {
     return <NotFoundPage />;

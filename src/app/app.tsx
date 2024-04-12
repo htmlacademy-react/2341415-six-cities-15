@@ -30,32 +30,34 @@ function App(): JSX.Element {
 
   function getInitializedAppRoutes() {
     return (
-      <Route path={AppRoute.Main} element={<Layout />}>
-        <Route index element={<MainScreen />} />
-        <Route path={AppRoute.Favorites} element={
-          <PrivateRoute
-            predicate={authorizationStatus === AuthorizationStatus.Auth}
-            falsePredicateRoute={AppRoute.Login}
-          >
-            <FavoritesScreen />
-          </PrivateRoute>
-        }
-        />
-        <Route path={AppRoute.Login} element={
-          <PrivateRoute
-            predicate={authorizationStatus === AuthorizationStatus.NoAuth}
-            falsePredicateRoute={AppRoute.Main}
-          >
-            <LoginScreen />
-          </PrivateRoute>
-        }
-        />
-        <Route path={AppRoute.Offer} >
-          <Route index element={<NotFoundPage />} />
-          <Route path={AppRoute.OfferId} element={<OfferScreenPreloader />} />
+      <>
+        <Route path={AppRoute.Main} element={<Layout />}>
+          <Route index element={<MainScreen />} />
+          <Route path={AppRoute.Favorites} element={
+            <PrivateRoute
+              predicate={authorizationStatus === AuthorizationStatus.Auth}
+              falsePredicateRoute={AppRoute.Login}
+            >
+              <FavoritesScreen />
+            </PrivateRoute>
+          }
+          />
+          <Route path={AppRoute.Login} element={
+            <PrivateRoute
+              predicate={authorizationStatus === AuthorizationStatus.NoAuth}
+              falsePredicateRoute={AppRoute.Main}
+            >
+              <LoginScreen />
+            </PrivateRoute>
+          }
+          />
+          <Route path={AppRoute.Offer} >
+            <Route index element={<NotFoundPage />} />
+            <Route path={AppRoute.OfferId} element={<OfferScreenPreloader />} />
+          </Route>
         </Route>
         <Route path='*' element={<NotFoundPage />} />
-      </Route>
+      </>
     );
   }
 

@@ -30,7 +30,7 @@ const initialState: OfferState = {
   isCommentWasAdded: false
 };
 
-const offerCardSlice = createSliceWithThunks({
+export const offerCardSlice = createSliceWithThunks({
   name: 'offerCard',
   initialState,
   selectors: {
@@ -41,7 +41,7 @@ const offerCardSlice = createSliceWithThunks({
       [
         (state: OfferState) => state.comments,
       ],
-      (comments) => comments.slice(0, DEFAULT_COMMENTS_COUNT)
+      (comments) => [...comments].sort((comment1, comment2) => new Date(comment2.date).getTime() - new Date(comment1.date).getTime()).slice(0, DEFAULT_COMMENTS_COUNT)
     ),
     selectCommentWasAdded: (state) => state.isCommentWasAdded,
     selectIsCommentAddingInProgress: (state) => state.isCommentAddingInProgress,
@@ -107,7 +107,7 @@ const offerCardSlice = createSliceWithThunks({
       {
         fulfilled: (state, action) => {
           state.isCommentAddingInProgress = false;
-          state.comments = [action.payload, ...state.comments];
+          state.comments = [action.payload,...state.comments];
           state.isCommentWasAdded = true;
         },
         pending: (state) => {
@@ -122,5 +122,20 @@ const offerCardSlice = createSliceWithThunks({
 });
 
 export default offerCardSlice;
-export const { fetchOfferCardDataAction, clearOfferDataAction, addCommentAction, resetCommentWasAddedAction } = offerCardSlice.actions;
-export const { selectSelectedOfferCard, selectNeighbours, selectComments, selectCurrentOfferCardId, selectIsCommentAddingInProgress, selectCommentWasAdded, selectCommentsCount } = offerCardSlice.selectors;
+export const
+  {
+    fetchOfferCardDataAction,
+    clearOfferDataAction,
+    addCommentAction,
+    resetCommentWasAddedAction
+  } = offerCardSlice.actions;
+export const
+  {
+    selectSelectedOfferCard,
+    selectNeighbours,
+    selectComments,
+    selectCurrentOfferCardId,
+    selectIsCommentAddingInProgress,
+    selectCommentWasAdded,
+    selectCommentsCount
+  } = offerCardSlice.selectors;

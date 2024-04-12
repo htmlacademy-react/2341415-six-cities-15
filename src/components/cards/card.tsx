@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { memo } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
 import { fetchIsFavoritesAction, selectAuthorizationStatus, selectFavoriteOffers, selectAddingToFavoritesOfferIds } from '../../store/auth-slice';
-import { clearOfferDataAction, fetchOfferCardDataAction } from '../../store/offer-card-slice';
+import { clearOfferDataAction } from '../../store/offer-card-slice';
 import cn from 'classnames';
 
 export type Props = {
@@ -31,7 +31,6 @@ function Card ({ id, isPremium, price, rating, title, type, className, previewIm
   const favoriteAddingOfferIds = useAppSelector(selectAddingToFavoritesOfferIds);
   const isFavorite = favoriteOffers.some((offer) => offer.id === id);
 
-
   const onFavoriteButtonClick: React.MouseEventHandler = (evt) => {
     evt.preventDefault();
     evt.stopPropagation();
@@ -47,7 +46,6 @@ function Card ({ id, isPremium, price, rating, title, type, className, previewIm
 
   function handleLinkClick() {
     dispatch(clearOfferDataAction());
-    dispatch(fetchOfferCardDataAction(id));
     navigate(`${AppRoute.Offer}${id}`);
   }
 
