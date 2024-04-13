@@ -24,7 +24,6 @@ export function getLayoutState(pathname: AppRoute, favoritesCount: number) {
     shouldRenderFooter = true;
     if(!favoritesCount) {
       rootClassName = ' page--favorites-empty';
-      shouldRenderFooter = false;
     }
   }
 
