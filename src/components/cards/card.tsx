@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
 import { fetchIsFavoritesAction, selectAuthorizationStatus, selectFavoriteOffers, selectAddingToFavoritesOfferIds } from '../../store/auth-slice';
 import { clearOfferDataAction } from '../../store/offer-card-slice';
 import cn from 'classnames';
+import { capitalize } from 'lodash';
 
 export type Props = {
   id: string;
@@ -83,7 +84,7 @@ function Card ({ id, isPremium, price, rating, title, type, className, previewIm
         <h2 className="place-card__name">
           <Link to=''>{title}</Link>
         </h2>
-        <p className="place-card__type">{type}</p>
+        <p className="place-card__type">{capitalize(type)}</p>
       </div>
     </article>
   );

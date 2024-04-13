@@ -1,16 +1,30 @@
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../hooks/app-dispatch';
+import { cityChangeAction } from '../../store/city-offers-slice';
 import FavoriteCard, { FavoriteCardProps } from './favorite-card';
+import { AppRoute } from '../../const';
+import { CityName } from '../../types';
 
 type Props = {
-  cityName: string;
+  cityName: CityName;
   cityOffers: FavoriteCardProps[];
 }
 
 function FavoriteListItem({ cityName, cityOffers }: Props): JSX.Element {
+
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  function handleOnCityClick() {
+    dispatch(cityChangeAction(cityName));
+    navigate(AppRoute.Main);
+  }
+
   return (
     <li className="favorites__locations-items">
       <div className="favorites__locations locations locations--current">
         <div className="locations__item">
-          <a className="locations__item-link" href="#">
+          <a onClick={handleOnCityClick} className="locations__item-link" href="#">
             <span>{cityName}</span>
           </a>
         </div>

@@ -11,6 +11,7 @@ import { Comment, Offer, OfferCard } from '../../types';
 import { fetchIsFavoritesAction, selectAddingToFavoritesOfferIds, selectAuthorizationStatus, selectFavoriteOffers } from '../../store/auth-slice';
 import { useNavigate } from 'react-router-dom';
 import { selectCommentsCount } from '../../store/offer-card-slice';
+import { capitalize } from 'lodash';
 
 type Props = {
   selectedOffer: OfferCard;
@@ -75,10 +76,10 @@ function OfferScreen({ selectedOffer, comments, neighbours }: Props): JSX.Elemen
             </div>
             <ul className="offer__features">
               <li className="offer__feature offer__feature--entire">
-                {selectedOffer.type}
+                {capitalize(selectedOffer.type)}
               </li>
               <li className="offer__feature offer__feature--bedrooms">
-                {selectedOffer.bedrooms} Bedrooms
+                {selectedOffer.bedrooms} Bedroom{selectedOffer.bedrooms > 1 ? 's' : ''}
               </li>
               <li className="offer__feature offer__feature--adults">
                   Max {selectedOffer.maxAdults} adults

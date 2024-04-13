@@ -1,6 +1,6 @@
 import { groupBy } from 'lodash';
 import FavoriteListItem from './favorite-list-item';
-import { Offer } from '../../types';
+import { CityName, Offer } from '../../types';
 
 type Props = {
   favorites: Offer[];
@@ -13,7 +13,7 @@ function FavoriteList({ favorites }: Props): JSX.Element | null {
     <>
       <h1 className="favorites__title">Saved listing</h1>
       <ul className="favorites__list">
-        {Object.entries(groupedFavorites).map(([cityName, cityOffers]) => <FavoriteListItem key={cityName} cityName={cityName} cityOffers={cityOffers} />)}
+        {Object.entries(groupedFavorites).map(([cityName, cityOffers]) => <FavoriteListItem key={cityName} cityName={cityName as CityName} cityOffers={cityOffers} />)}
       </ul>
     </>
   );
