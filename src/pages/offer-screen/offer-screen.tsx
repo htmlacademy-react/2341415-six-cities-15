@@ -1,14 +1,16 @@
-import { AuthorizationStatus } from '../../const';
+import { AppRoute, AuthorizationStatus, CITY_LOCATION, DISPLAYED_OFFER_IMAGE_COUNT } from '../../const';
 import { getRatingPercentage, offerToPoint } from '../../utils';
 import { MAX_RATING } from '../../const';
 import OfferCommentsForm from '../../forms/offer-comments-form';
 import CommentList from '../../components/comment/comment-list';
 import CityMap from '../../components/map/map';
-import { cityLocation } from '../../mocks/city-locations';
 import NearestCardsList from '../../components/cards/nearest-cards-list';
 import cn from 'classnames';
-import { useAppSelector } from '../../hooks/app-dispatch';
+import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
 import { Comment, Offer, OfferCard } from '../../types';
+import { fetchIsFavoritesAction, selectAddingToFavoritesOfferIds, selectAuthorizationStatus, selectFavoriteOffers } from '../../store/auth-slice';
+import { useNavigate } from 'react-router-dom';
+import { selectCommentsCount } from '../../store/offer-card-slice';
 
 type Props = {
   selectedOffer: OfferCard;
@@ -17,16 +19,33 @@ type Props = {
 }
 
 function OfferScreen({ selectedOffer, comments, neighbours }: Props): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.other.authorizationStatus);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const authorizationStatus = useAppSelector(selectAuthorizationStatus);
+  const favoriteOffers = useAppSelector(selectFavoriteOffers);
+  const isFavorite = favoriteOffers.some((offer) => offer.id === selectedOffer.id);
+  const bookmarksButtonClassName = `offer__bookmark-button button${isFavorite ? ' offer__bookmark-button--active' : ''}`;
+  const favoriteAddingOfferIds = useAppSelector(selectAddingToFavoritesOfferIds);
+  const commentsCount = useAppSelector(selectCommentsCount);
 
-  const bookmarksButtonClassName = `offer__bookmark-button button${selectedOffer.isFavorite ? ' offer__bookmark-button--active' : ''}`;
+  const onFavoriteButtonClick: React.MouseEventHandler = (evt) => {
+    evt.preventDefault();
+
+    if (authorizationStatus === AuthorizationStatus.Auth) {
+      dispatch(fetchIsFavoritesAction({ id: selectedOffer.id, isFavorite: !isFavorite }));
+    } else {
+      navigate(AppRoute.Login);
+    }
+  };
+
+  const displayedImages = selectedOffer.images.slice(0, DISPLAYED_OFFER_IMAGE_COUNT);
 
   return (
     <main className="page__main page__main--offer">
       <section className="offer">
         <div className="offer__gallery-container container">
           <div className="offer__gallery">
-            {selectedOffer.images.map((image) => (
+            {displayedImages.map((image) => (
               <div key={image} className="offer__image-wrapper">
                 <img className="offer__image" src={image} alt="Photo studio" />
               </div>
@@ -40,7 +59,7 @@ function OfferScreen({ selectedOffer, comments, neighbours }: Props): JSX.Elemen
               <h1 className="offer__name">
                 {selectedOffer.title}
               </h1>
-              <button className={bookmarksButtonClassName} type="button">
+              <button className={bookmarksButtonClassName} onClick={onFavoriteButtonClick} type="button" disabled={favoriteAddingOfferIds.includes(selectedOffer.id)}>
                 <svg className="offer__bookmark-icon" width="31" height="33">
                   <use xlinkHref="#icon-bookmark"></use>
                 </svg>
@@ -84,9 +103,7 @@ function OfferScreen({ selectedOffer, comments, neighbours }: Props): JSX.Elemen
                 <span className="offer__user-name">
                   {selectedOffer.host.name}
                 </span>
-                <span className="offer__user-status">
-                  {selectedOffer.host.isPro ? 'Pro' : ''}
-                </span>
+                {selectedOffer.host.isPro ? <span className="offer__user-status">Pro</span> : null}
               </div>
               <div className="offer__description">
                 <p className="offer__text">
@@ -95,16 +112,14 @@ function OfferScreen({ selectedOffer, comments, neighbours }: Props): JSX.Elemen
               </div>
             </div>
             <section className="offer__reviews reviews">
-              <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{comments.length}</span></h2>
+              <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{commentsCount}</span></h2>
               <CommentList comments={comments}/>
-              {authorizationStatus === AuthorizationStatus.Auth ?
-                <OfferCommentsForm />
-                : null}
+              {authorizationStatus === AuthorizationStatus.Auth ? <OfferCommentsForm /> : null}
             </section>
           </div>
         </div>
         <CityMap
-          city={{ name: selectedOffer.city.name, location: cityLocation[selectedOffer.city.name] }}
+          city={{ name: selectedOffer.city.name, location: CITY_LOCATION[selectedOffer.city.name] }}
           points={[selectedOffer, ...neighbours].map(offerToPoint)}
           selectedPointId={selectedOffer.id}
           className='offer__map'

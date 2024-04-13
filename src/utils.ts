@@ -3,7 +3,9 @@ import { format } from 'date-fns';
 import { Offer } from './types';
 import { Point } from './components/map/types';
 import { SortVariants } from './const';
-import { SerializedError } from '@reduxjs/toolkit';
+import { Action, SerializedError, ThunkDispatch } from '@reduxjs/toolkit';
+import { setError } from './store/action';
+import { clearErrorAction } from './store/api-actions';
 
 export function getLayoutState(pathname: AppRoute, favoritesCount: number) {
   let rootClassName = '';
@@ -12,7 +14,7 @@ export function getLayoutState(pathname: AppRoute, favoritesCount: number) {
   let shouldRenderFooter = false;
 
 
-  if(pathname === AppRoute.Main) {
+  if (pathname === AppRoute.Main) {
     rootClassName = ' page--gray page--main';
     linkClassName = ' header__logo-link--active';
   } else if(pathname === AppRoute.Login) {
@@ -30,14 +32,14 @@ export function getLayoutState(pathname: AppRoute, favoritesCount: number) {
 }
 
 export function getRatingPercentage(rating: number, maxRating: number) {
-  return Math.round(rating / maxRating * 100);
+  return Math.round(Math.round(rating) / maxRating * 100);
 }
 
 export function formatCommentDate(date: Date): string {
   return format(date, 'MMMM yyyy');
 }
 
-export function offerToPoint(offer: Offer): Point {
+export function offerToPoint(offer: Pick<Offer, 'id' | 'location' | 'title'>): Point {
   const { id, location, title } = offer;
 
   return {
@@ -52,11 +54,17 @@ export function isNotFoundError(err: SerializedError): boolean {
   return err.message?.includes('404') ?? false;
 }
 
+export function showErrorMessage(message: string, dispatch: ThunkDispatch<unknown, unknown, Action>) {
+  dispatch(setError(message));
+  dispatch(clearErrorAction());
+}
+
 type Comparator = (offer1: Offer, offer2: Offer) => number;
 
-export const comparators: Record<SortVariants, Comparator> = {
+export const COMPARATORS: Record<SortVariants, Comparator> = {
   [SortVariants.Popular]: () => 0,
   [SortVariants.PriceHighToLow]: (offer1, offer2) => offer2.price - offer1.price,
   [SortVariants.PriceLowToHigh]: (offer1, offer2) => offer1.price - offer2.price,
   [SortVariants.TopRatedFirst]: (offer1, offer2) => offer2.rating - offer1.rating,
 };
+

@@ -1,8 +1,9 @@
 import { OfferType } from '../../types';
 import { getRatingPercentage } from '../../utils';
-import { MAX_RATING } from '../../const';
-import { useAppDispatch } from '../../hooks/app-dispatch';
-import { fetchIsFavoritesAction } from '../../store/city-offers-slice';
+import { AppRoute, AuthorizationStatus, MAX_RATING } from '../../const';
+import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
+import { fetchIsFavoritesAction, selectAddingToFavoritesOfferIds, selectAuthorizationStatus, selectFavoriteOffers } from '../../store/auth-slice';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   id: string;
@@ -10,19 +11,29 @@ type Props = {
   type: OfferType;
   price: number;
   previewImage: string;
-  isFavorite: boolean;
   isPremium: boolean;
   rating: number;
 };
 
 
-function FavoriteCard({ id, price, rating, previewImage, type, title, isFavorite, isPremium }: Props): JSX.Element {
+function FavoriteCard({ id, price, rating, previewImage, type, title, isPremium }: Props): JSX.Element {
 
   const dispatch = useAppDispatch();
 
+  const navigate = useNavigate();
+  const authorizationStatus = useAppSelector(selectAuthorizationStatus);
+  const favoriteOffers = useAppSelector(selectFavoriteOffers);
+  const isFavorite = favoriteOffers.some((offer) => offer.id === id);
+  const favoriteAddingOfferIds = useAppSelector(selectAddingToFavoritesOfferIds);
+
   const onFavoriteButtonClick: React.MouseEventHandler = (evt) => {
     evt.preventDefault();
-    dispatch(fetchIsFavoritesAction({id, isFavorite}));
+
+    if (authorizationStatus === AuthorizationStatus.Auth) {
+      dispatch(fetchIsFavoritesAction({ id, isFavorite: !isFavorite }));
+    } else {
+      navigate(AppRoute.Login);
+    }
   };
 
   const bookmarksButtonClassName = `place-card__bookmark-button button${isFavorite ? ' place-card__bookmark-button--active' : ''}`;
@@ -41,7 +52,7 @@ function FavoriteCard({ id, price, rating, previewImage, type, title, isFavorite
             <b className="place-card__price-value">&euro;{price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
-          <button className={bookmarksButtonClassName} onClick={onFavoriteButtonClick} type="button">
+          <button className={bookmarksButtonClassName} onClick={onFavoriteButtonClick} type="button" disabled={favoriteAddingOfferIds.includes(id)}>
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark"></use>
             </svg>

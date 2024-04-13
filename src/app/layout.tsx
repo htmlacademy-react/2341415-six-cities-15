@@ -2,24 +2,19 @@ import { Outlet, useLocation, Link } from 'react-router-dom';
 import { AppRoute, AuthorizationStatus, DEFAULT_CITY } from '../const';
 import { getLayoutState } from '../utils';
 import { useAppDispatch, useAppSelector } from '../hooks/app-dispatch';
-import { logoutAction } from '../store/api-actions';
-import { cityChangeAction, fetchOffersAction } from '../store/city-offers-slice';
-import { selectFavoriteOffers } from '../store/city-offers-slice';
+import { cityChangeAction } from '../store/city-offers-slice';
+import { logoutAction, selectAuthorizationStatus, selectFavoriteOffers, selectUser } from '../store/auth-slice';
 
 function Layout(): JSX.Element {
   const { pathname } = useLocation();
-  const favoriteOffersCount = useAppSelector(selectFavoriteOffers);
-  const { rootClassName, linkClassName, shouldRenderUser, shouldRenderFooter } = getLayoutState(pathname as AppRoute, favoriteOffersCount.length);
-  const authorizationStatus = useAppSelector((state) => state.other.authorizationStatus);
-  const user = useAppSelector((state) => state.other.user);
+  const favoriteOffers = useAppSelector(selectFavoriteOffers);
+  const { rootClassName, linkClassName, shouldRenderUser, shouldRenderFooter } = getLayoutState(pathname as AppRoute, favoriteOffers.length);
+  const authorizationStatus = useAppSelector(selectAuthorizationStatus);
+  const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
 
   function handleLogoClick() {
     dispatch(cityChangeAction(DEFAULT_CITY));
-    dispatch(fetchOffersAction(DEFAULT_CITY));
-  }
-  function handleLogoutClick() {
-    dispatch(logoutAction());
   }
 
   return (
@@ -53,7 +48,7 @@ function Layout(): JSX.Element {
                         {authorizationStatus === AuthorizationStatus.Auth ? (
                           <>
                             <span className="header__user-name user__name">{user?.email}</span>
-                            <span className="header__favorite-count">{favoriteOffersCount.length}</span>
+                            <span className="header__favorite-count">{favoriteOffers.length}</span>
                           </>
                         ) : <span className="header__login">Sign in</span>}
                       </Link>
@@ -61,7 +56,10 @@ function Layout(): JSX.Element {
                     {authorizationStatus === AuthorizationStatus.Auth ? (
                       <li className="header__nav-item">
                         <a
-                          onClick={handleLogoutClick}
+                          onClick={(evt) => {
+                            evt.preventDefault();
+                            dispatch(logoutAction());
+                          }}
                           className="header__nav-link" href="#"
                         >
                           <span className="header__signout">Sign out</span>
@@ -90,3 +88,4 @@ function Layout(): JSX.Element {
 }
 
 export default Layout;
+
