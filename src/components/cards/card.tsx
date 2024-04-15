@@ -45,14 +45,14 @@ function Card ({ id, isPremium, price, rating, title, type, className, previewIm
 
   const bookmarksButtonClassName = cn('button', 'place-card__bookmark-button', { 'place-card__bookmark-button--active': isFavorite });
 
-  function handleLinkClick() {
+  function handleClick() {
     dispatch(clearOfferDataAction());
     navigate(`${AppRoute.Offer}${id}`);
   }
 
   return (
     <article
-      onClick={handleLinkClick}
+      onClick={handleClick}
       onMouseEnter={onMouseEnter ? () => onMouseEnter(id) : undefined}
       onMouseLeave={onMouseLeave}
       key={id}

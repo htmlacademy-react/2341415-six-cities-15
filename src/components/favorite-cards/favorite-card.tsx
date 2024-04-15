@@ -3,7 +3,8 @@ import { getRatingPercentage } from '../../utils';
 import { AppRoute, AuthorizationStatus, MAX_RATING } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks/app-dispatch';
 import { fetchIsFavoritesAction, selectAddingToFavoritesOfferIds, selectAuthorizationStatus, selectFavoriteOffers } from '../../store/auth-slice';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { capitalize } from 'lodash';
 
 type Props = {
   id: string;
@@ -28,6 +29,7 @@ function FavoriteCard({ id, price, rating, previewImage, type, title, isPremium 
 
   const onFavoriteButtonClick: React.MouseEventHandler = (evt) => {
     evt.preventDefault();
+    evt.stopPropagation();
 
     if (authorizationStatus === AuthorizationStatus.Auth) {
       dispatch(fetchIsFavoritesAction({ id, isFavorite: !isFavorite }));
@@ -39,12 +41,12 @@ function FavoriteCard({ id, price, rating, previewImage, type, title, isPremium 
   const bookmarksButtonClassName = `place-card__bookmark-button button${isFavorite ? ' place-card__bookmark-button--active' : ''}`;
 
   return (
-    <article key={id} className="favorites__card place-card">
+    <article onClick={() => navigate(`${AppRoute.Offer}${id}`)} key={id} className="favorites__card place-card">
       {isPremium ? <div className="place-card__mark"><span>Premium</span></div> : null}
       <div className="favorites__image-wrapper place-card__image-wrapper">
-        <a href="#">
+        <Link to="">
           <img className="place-card__image" src={previewImage} width="150" height="110" alt="Place image" />
-        </a>
+        </Link>
       </div>
       <div className="favorites__card-info place-card__info">
         <div className="place-card__price-wrapper">
@@ -66,9 +68,9 @@ function FavoriteCard({ id, price, rating, previewImage, type, title, isPremium 
           </div>
         </div>
         <h2 className="place-card__name">
-          <a href="#">{title}</a>
+          <Link to="">{title}</Link>
         </h2>
-        <p className="place-card__type">{type}</p>
+        <p className="place-card__type">{capitalize(type)}</p>
       </div>
     </article>
   );
