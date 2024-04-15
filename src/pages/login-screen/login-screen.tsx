@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { AppRoute, CITIES } from '../../const';
 import { sample } from 'lodash';
 import { cityChangeAction } from '../../store/city-offers-slice';
+import { MouseEvent } from 'react';
 
 function isPasswordValid(password: string) {
   return /[A-z]+/.test(password) && /\d+/.test(password);
@@ -35,7 +36,8 @@ function LoginScreen(): JSX.Element {
 
   const randomCity = useMemo(() => sample(CITIES)!, []);
 
-  function handleOnCityClick() {
+  function handleOnCityClick(evt: MouseEvent) {
+    evt.preventDefault();
     dispatch(cityChangeAction(randomCity));
     navigate(AppRoute.Main);
   }
