@@ -82,7 +82,7 @@ function OfferScreen({ selectedOffer, comments, neighbours }: Props): JSX.Elemen
                 {selectedOffer.bedrooms} Bedroom{selectedOffer.bedrooms > 1 ? 's' : ''}
               </li>
               <li className="offer__feature offer__feature--adults">
-                  Max {selectedOffer.maxAdults} adults
+                  Max {selectedOffer.maxAdults} adult{selectedOffer.maxAdults > 1 ? 's' : ''}
               </li>
             </ul>
             <div className="offer__price">
