@@ -1,3 +1,4 @@
+import { MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../hooks/app-dispatch';
 import { cityChangeAction } from '../../store/city-offers-slice';
@@ -15,7 +16,8 @@ function FavoriteListItem({ cityName, cityOffers }: Props): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  function handleOnCityClick() {
+  function handleOnCityClick(evt: MouseEvent) {
+    evt.preventDefault();
     dispatch(cityChangeAction(cityName));
     navigate(AppRoute.Main);
   }
